@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
+<wallpapers>
+  <wallpaper deleted="false">
+    <name>Tɔlɔmɛ — Ganvié</name>
+    <filename>/usr/share/backgrounds/tolome/tolome-fond-ganvie.svg</filename>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#23325E</pcolor>
+    <scolor>#1B2749</scolor>
+  </wallpaper>
+  <wallpaper deleted="false">
+    <name>Tɔlɔmɛ — Porto-Novo</name>
+    <filename>/usr/share/backgrounds/tolome/tolome-fond-porto-novo.svg</filename>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#23325E</pcolor>
+    <scolor>#1B2749</scolor>
+  </wallpaper>
+  <wallpaper deleted="false">
+    <name>Tɔlɔmɛ — Abomey</name>
+    <filename>/usr/share/backgrounds/tolome/tolome-fond-abomey.svg</filename>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#23325E</pcolor>
+    <scolor>#1B2749</scolor>
+  </wallpaper>
+  <wallpaper deleted="false">
+    <name>Tɔlɔmɛ — Ouidah</name>
+    <filename>/usr/share/backgrounds/tolome/tolome-fond-ouidah.svg</filename>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#23325E</pcolor>
+    <scolor>#1B2749</scolor>
+  </wallpaper>
+  <wallpaper deleted="false">
+    <name>Tɔlɔmɛ — Grand-Popo</name>
+    <filename>/usr/share/backgrounds/tolome/tolome-fond-grand-popo.svg</filename>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#23325E</pcolor>
+    <scolor>#1B2749</scolor>
+  </wallpaper>
+  <wallpaper deleted="false">
+    <name>Tɔlɔmɛ — Parakou</name>
+    <filename>/usr/share/backgrounds/tolome/tolome-fond-parakou.svg</filename>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#23325E</pcolor>
+    <scolor>#1B2749</scolor>
+  </wallpaper>
+  <wallpaper deleted="false">
+    <name>Tɔlɔmɛ — Natitingou</name>
+    <filename>/usr/share/backgrounds/tolome/tolome-fond-natitingou.svg</filename>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#23325E</pcolor>
+    <scolor>#1B2749</scolor>
+  </wallpaper>
+  <wallpaper deleted="false">
+    <name>Tɔlɔmɛ — Atacora</name>
+    <filename>/usr/share/backgrounds/tolome/tolome-fond-atacora.svg</filename>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#23325E</pcolor>
+    <scolor>#1B2749</scolor>
+  </wallpaper>
+</wallpapers>

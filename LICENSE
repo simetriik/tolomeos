@@ -1,0 +1,34 @@
+Tɔlɔmɛ — licences
+=================
+
+Ce dépôt réunit plusieurs types de contenus, chacun sous sa propre licence.
+Les textes complets sont dans le dossier LICENSES/. Le détail fichier par
+fichier figure dans le fichier debian/copyright de chaque paquet
+(packages/<paquet>/debian/copyright) et prévaut en cas de doute.
+
+Code et configuration                         GPL-2        LICENSES/GPL-2.0.txt
+  - packages/*/ (scripts, hooks, configuration, debian/*)
+  - live/ (configuration live-build)
+  - tools/
+  - tolome-calamares-settings : parties adaptées de calamares-settings-debian
+    sous GPL-2+ (voir son debian/copyright)
+
+Identité visuelle et sons                     CC-BY-SA-4.0 LICENSES/CC-BY-SA-4.0.txt
+  - packages/tolome-artwork/artwork/ (fonds d'écran, icônes)
+  - packages/tolome-artwork/sounds/
+  - copies de ces fichiers dans les autres paquets
+
+Contours du nom « Tɔlɔmɛ » dans les logos     OFL-1.1      LICENSES/OFL-1.1.txt
+  - dérivés de la police Montserrat (© The Montserrat Project Authors)
+
+Locale fr_BJ                                  LGPL-2.1+    LICENSES/LGPL-2.1.txt
+  - packages/tolome-locales/i18n/locales/fr_BJ, dérivée de la locale fr_FR
+    de la bibliothèque C GNU
+
+Marque
+------
+Le nom « Tɔlɔmɛ » et le logo baobab sont des marques de Simetriik Solutions,
+filiale de Nemim Sarl. Aucune des licences ci-dessus ne concède de droit sur
+ces marques. Voir le fichier MARQUE.
+
+Copyright 2026 Simetriik Solutions

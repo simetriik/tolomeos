@@ -1,0 +1,14 @@
+tolome-gdm-theme (0.1.1) UNRELEASED; urgency=medium
+
+  * postrm: do not lift the diversion on abort-upgrade (the old version is
+    still installed then); only on remove and abort-install.
+
+ -- Anhky <dev@tolome.net>  Tue, 03 Nov 2026 23:46:00 +0100
+
+tolome-gdm-theme (0.1.0) UNRELEASED; urgency=medium
+
+  * Initial packaging: darkened, blurred Ganvié background on the GDM login
+    screen, through a diverted and regenerated gnome-shell-theme.gresource.
+    Modes image/flat/off in /etc/tolome/gdm-background.conf.
+
+ -- Anhky <dev@tolome.net>  Tue, 03 Nov 2026 22:00:00 +0100

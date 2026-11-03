@@ -1,0 +1,11 @@
+Son d'ouverture de session de Tɔlɔmɛ
+====================================
+
+accueil.wav   son provisoire (v1, 1,6 s), créé par nous avec son-accueil.py
+              (licence CC-BY-SA-4.0, © 2026 Simetriik Solutions).
+
+Remplacement : le son définitif (enregistré avec des musiciens béninois) se
+substitue en remplaçant ce SEUL fichier. Formats acceptés : accueil.wav,
+accueil.ogg, accueil.oga ou accueil.flac. Le script ne fixe ni durée ni niveau :
+le volume du flux est réglé dans data/login-sound/tolome-login-sound (VOLUME).
+Penser à mettre à jour debian/copyright (droits des interprètes, licence).

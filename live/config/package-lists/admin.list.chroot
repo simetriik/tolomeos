@@ -1,0 +1,4 @@
+# Administration : sudo-rs (appelé par la commande « dada » du paquet tolome-dada,
+# qui garde aussi « sudo » d'origine) et nala, installé d'office. apt reste la base.
+sudo-rs
+nala

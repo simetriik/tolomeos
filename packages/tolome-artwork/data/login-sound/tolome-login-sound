@@ -1,0 +1,63 @@
+#!/bin/sh
+# Son d'ouverture de session de Tɔlɔmɛ, joué une fois à chaque ouverture de
+# session GNOME (pas dans la session live).
+#
+# Respecte le volume et la sourdine de l'utilisateur : le son passe par la
+# sortie audio par défaut (PipeWire). Désactivation :
+#   - GNOME Tweaks > Applications au démarrage ;
+#   - fichier ~/.config/autostart/tolome-login-sound.desktop avec Hidden=true ;
+#   - gsettings set org.gnome.desktop.sound event-sounds false
+#
+# Variables d'environnement (tests uniquement) :
+#   TOLOME_SOUND_DIR      dossier du son (défaut : /usr/share/sounds/tolome)
+#   TOLOME_CMDLINE_FILE   ligne de commande du noyau (défaut : /proc/cmdline)
+#   TOLOME_WAIT_TRIES     essais d'attente de PipeWire, 0,5 s chacun (défaut : 30)
+
+# Volume du flux, de 0 à 1 (le volume général de l'utilisateur s'y ajoute).
+VOLUME="0.7"
+
+DIR="${TOLOME_SOUND_DIR:-/usr/share/sounds/tolome}"
+CMDLINE="${TOLOME_CMDLINE_FILE:-/proc/cmdline}"
+TRIES="${TOLOME_WAIT_TRIES:-30}"
+TAG="tolome-login-sound"
+
+log() { logger -t "$TAG" -- "$*" 2>/dev/null || true; }
+
+# Session live : pas de son.
+if grep -qw 'boot=live' "$CMDLINE" 2>/dev/null; then
+    exit 0
+fi
+
+# Réglage GNOME « sons des événements » désactivé : pas de son.
+if [ "$(gsettings get org.gnome.desktop.sound event-sounds 2>/dev/null)" = "false" ]; then
+    exit 0
+fi
+
+# Fichier à jouer : le premier de accueil.{wav,ogg,oga,flac}.
+FILE=""
+for ext in wav ogg oga flac; do
+    if [ -f "$DIR/accueil.$ext" ]; then
+        FILE="$DIR/accueil.$ext"
+        break
+    fi
+done
+if [ -z "$FILE" ]; then
+    log "aucun fichier accueil.* dans $DIR"
+    exit 0
+fi
+
+# Attend que PipeWire expose une sortie audio par défaut (jusqu'à ~15 s).
+i=0
+while ! wpctl inspect @DEFAULT_AUDIO_SINK@ >/dev/null 2>&1; do
+    i=$((i + 1))
+    if [ "$i" -ge "$TRIES" ]; then
+        log "pas de sortie audio, son non joué"
+        exit 0
+    fi
+    sleep 0.5
+done
+
+if ! pw-play --volume="$VOLUME" --media-category=Playback --media-role=Notification "$FILE"; then
+    log "échec de la lecture de $FILE"
+fi
+exit 0

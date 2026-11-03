@@ -1,0 +1,3 @@
+data/gdm-theme-update usr/lib/tolome/
+data/gdm-background.conf etc/tolome/
+build/gdm-background.png usr/share/tolome/

@@ -1,0 +1,125 @@
+#!/bin/sh
+# Compile et déclare les locales de Tɔlɔmɛ (fr_BJ, plus tard fon_BJ…).
+#
+# Usage : locales-update update|compile|supported|clean
+#   compile    compile chaque locale du manifeste dans /usr/lib/locale/<nom>.<codage>/
+#              (localedef --no-archive : ni locale-archive ni glibc ne sont modifiés)
+#   supported  régénère /usr/share/i18n/SUPPORTED (détourné) = SUPPORTED.distrib + manifeste
+#   update     supported puis compile
+#   clean      supprime les locales compilées par ce paquet (repérées par un fichier-témoin)
+#
+# Le manifeste est <I18N>/SUPPORTED (lignes « fr_BJ.UTF-8 UTF-8 ») ; les définitions
+# sont dans <I18N>/locales/<nom>. Ajouter une locale = un fichier + une ligne.
+#
+# Variables d'environnement (tests uniquement) :
+#   TOLOME_I18N_DIR        (défaut /usr/share/tolome/i18n)
+#   TOLOME_LOCALE_DIR      (défaut /usr/lib/locale)
+#   TOLOME_SUPPORTED       (défaut /usr/share/i18n/SUPPORTED)
+#   TOLOME_SUPPORTED_ORIG  (défaut <SUPPORTED>.distrib)
+set -u
+
+I18N="${TOLOME_I18N_DIR:-/usr/share/tolome/i18n}"
+LOCDIR="${TOLOME_LOCALE_DIR:-/usr/lib/locale}"
+SUPP="${TOLOME_SUPPORTED:-/usr/share/i18n/SUPPORTED}"
+SUPP_ORIG="${TOLOME_SUPPORTED_ORIG:-$SUPP.distrib}"
+MANIFEST="$I18N/SUPPORTED"
+STAMP=.tolome-locales
+TAG="tolome-locales"
+
+log() { echo "$TAG: $*" >&2; logger -t "$TAG" -- "$*" 2>/dev/null || true; }
+
+# Lignes utiles du manifeste : « locale codage »
+entrees() {
+    [ -f "$MANIFEST" ] || return 0
+    grep -v -E '^[[:space:]]*(#|$)' "$MANIFEST"
+}
+
+# Nom du dossier compilé : fr_BJ.UTF-8 UTF-8 -> fr_BJ.utf8
+nom_dossier() {
+    base="${1%%.*}"
+    norm=$(printf '%s' "$2" | tr 'A-Z' 'a-z' | tr -d '_-')
+    printf '%s.%s' "$base" "$norm"
+}
+
+compile_une() { # $1 = locale, $2 = codage
+    locale=$1; charset=$2
+    base="${locale%%.*}"
+    dossier="$LOCDIR/$(nom_dossier "$locale" "$charset")"
+    if [ ! -f "$I18N/locales/$base" ]; then
+        log "définition absente : $I18N/locales/$base"; return 1
+    fi
+    if [ -e "$dossier" ] && [ ! -f "$dossier/$STAMP" ]; then
+        log "$dossier existe et n'a pas été créé par ce paquet : non remplacé"; return 0
+    fi
+    W=$(mktemp -d "$LOCDIR/.tolome-build.XXXXXX") || { log "mktemp impossible dans $LOCDIR"; return 1; }
+    mkdir -p "$W/usr/lib/locale"
+    I18NPATH="$I18N" localedef --no-archive --prefix="$W" -c -i "$base" -f "$charset" "$locale" >"$W/sortie.txt" 2>&1
+    rc=$?
+    neuf="$W/usr/lib/locale/$(nom_dossier "$locale" "$charset")"
+    # localedef rend 0 (ok) ou 1 (avertissements, comme avec -c dans locale-gen)
+    if [ "$rc" -gt 1 ] || [ ! -f "$neuf/LC_IDENTIFICATION" ]; then
+        log "compilation de $locale impossible (code $rc) : $(tail -n 2 "$W/sortie.txt" | tr '\n' ' ')"
+        rm -rf "$W"; return 1
+    fi
+    echo "locale compilée par le paquet tolome-locales" > "$neuf/$STAMP"
+    chmod -R u+rwX,go+rX-w "$neuf"
+    # remplacement par renommages
+    rm -rf "$dossier.old"
+    [ -d "$dossier" ] && mv "$dossier" "$dossier.old"
+    if mv "$neuf" "$dossier"; then
+        rm -rf "$dossier.old"
+        log "locale $locale compilée dans $dossier"
+    else
+        [ -d "$dossier.old" ] && mv "$dossier.old" "$dossier"
+        log "installation de $dossier impossible"; rm -rf "$W"; return 1
+    fi
+    rm -rf "$W"
+    return 0
+}
+
+cmd_compile() {
+    echec=0
+    entrees | while read -r locale charset; do
+        compile_une "$locale" "$charset" || echo 1 > "${TMPDIR:-/tmp}/.tolome-locales-echec.$$"
+    done
+    if [ -e "${TMPDIR:-/tmp}/.tolome-locales-echec.$$" ]; then rm -f "${TMPDIR:-/tmp}/.tolome-locales-echec.$$"; echec=1; fi
+    return $echec
+}
+
+cmd_supported() {
+    if [ ! -f "$SUPP_ORIG" ]; then
+        log "SUPPORTED d'origine introuvable ($SUPP_ORIG) : rien à faire"; return 0
+    fi
+    nouveau=$(mktemp "$SUPP.XXXXXX") || { log "mktemp impossible pour $SUPP"; return 1; }
+    cat "$SUPP_ORIG" > "$nouveau"
+    [ -s "$nouveau" ] && [ "$(tail -c 1 "$nouveau" | od -An -c | tr -d ' ')" != '\n' ] && echo >> "$nouveau"
+    entrees | while read -r locale charset; do
+        ligne="$locale $charset"
+        grep -qxF "$ligne" "$SUPP_ORIG" || echo "$ligne" >> "$nouveau"
+    done
+    chmod 644 "$nouveau"
+    if mv -f "$nouveau" "$SUPP"; then
+        log "SUPPORTED régénéré ($(wc -l < "$SUPP") lignes)"
+    else
+        rm -f "$nouveau"; log "écriture de $SUPP impossible"; return 1
+    fi
+}
+
+cmd_clean() {
+    entrees | while read -r locale charset; do
+        dossier="$LOCDIR/$(nom_dossier "$locale" "$charset")"
+        if [ -f "$dossier/$STAMP" ]; then
+            rm -rf "$dossier" && log "locale $locale supprimée"
+        fi
+    done
+    return 0
+}
+
+case "${1:-}" in
+    update)    cmd_supported; cmd_compile ;;
+    compile)   cmd_compile ;;
+    supported) cmd_supported ;;
+    clean)     cmd_clean ;;
+    *) echo "usage : $0 update|compile|supported|clean" >&2; exit 2 ;;
+esac
+exit 0

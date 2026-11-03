@@ -1,0 +1,38 @@
+---
+componentName:   tolome
+welcomeStyleCalamares: true
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 800px,580px
+windowPlacement: center
+
+strings:
+    productName:         Tɔlɔmɛ
+    shortProductName:    Tɔlɔmɛ
+    version:             13
+    shortVersion:        13
+    versionedName:       Tɔlɔmɛ
+    shortVersionedName:  Tɔlɔmɛ
+    bootloaderEntryName: Tolome
+    productUrl:          https://tolome.net
+    supportUrl:          https://tolome.net
+    knownIssuesUrl:      https://tolome.net
+    releaseNotesUrl:     https://tolome.net
+    donateUrl:           https://tolome.net
+
+sidebar: widget
+navigation: widget
+
+images:
+    productLogo:         "tolome-logo.png"
+    productIcon:         "tolome-logo.png"
+    productWelcome:      "welcome.png"
+
+slideshow:               "show.qml"
+slideshowAPI: 2
+
+style:
+   SidebarBackground:        "#23325E"
+   SidebarText:              "#F4EDE1"
+   SidebarTextCurrent:       "#23325E"
+   SidebarBackgroundCurrent: "#C98A2B"

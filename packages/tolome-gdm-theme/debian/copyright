@@ -1,0 +1,26 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: tolome-gdm-theme
+Upstream-Contact: Simetriik Solutions <dev@tolome.net>
+
+Files: artwork/*
+Copyright: 2026 Simetriik Solutions
+License: CC-BY-SA-4.0
+Comment: Copy of the Ganvié wallpaper of tolome-artwork; the installed
+ background (usr/share/tolome/gdm-background.png) is derived from it.
+
+Files: *
+Copyright: 2026 Simetriik Solutions
+License: GPL-2
+
+License: CC-BY-SA-4.0
+ On Debian systems, the full text of the Creative Commons
+ Attribution-ShareAlike 4.0 International licence can be found in the file
+ "/usr/share/common-licenses/CC-BY-SA-4.0".
+
+License: GPL-2
+ This program is free software; you can redistribute it and/or modify it
+ under the terms of the GNU General Public License version 2 as published
+ by the Free Software Foundation.
+ .
+ On Debian systems, the complete text of the GNU General Public License
+ version 2 can be found in "/usr/share/common-licenses/GPL-2".

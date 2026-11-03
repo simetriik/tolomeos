@@ -1,0 +1,12 @@
+# Fond d'écran et écran de verrouillage par défaut de Tɔlɔmɛ.
+# Chargé après 10_desktop-base (ordre alphabétique) : cette surcharge l'emporte.
+[org.gnome.desktop.background]
+picture-options='zoom'
+picture-uri='file:///usr/share/backgrounds/tolome/tolome-fond-ganvie.svg'
+picture-uri-dark='file:///usr/share/backgrounds/tolome/tolome-fond-ganvie.svg'
+primary-color='#23325E'
+
+[org.gnome.desktop.screensaver]
+picture-options='zoom'
+picture-uri='file:///usr/share/backgrounds/tolome/tolome-fond-ganvie.svg'
+primary-color='#23325E'

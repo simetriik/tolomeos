@@ -1,0 +1,25 @@
+Source: tolome-artwork
+Section: x11
+Priority: optional
+Maintainer: Anhky <dev@tolome.net>
+Build-Depends: debhelper-compat (= 13), librsvg2-bin
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+
+Package: tolome-artwork
+Architecture: all
+Depends: libglib2.0-0t64, libglib2.0-bin, pipewire-bin, plymouth, ${misc:Depends}
+Recommends: gnome-shell
+Description: Visual identity of Tolome (wallpapers, icon, boot splash)
+ Installs the Tɔlɔmɛ identity:
+  * eight wallpapers of Benin, listed in the GNOME appearance settings,
+    with Ganvié as the default wallpaper and lock screen background;
+  * the Tɔlɔmɛ icon in the hicolor theme, named "tolome";
+  * a Plymouth boot splash theme and a GRUB theme using the Tɔlɔmɛ logo
+    on an indigo background;
+  * a short login sound, played once at each GNOME login (not in the live
+    session); it respects the user's volume and mute and can be disabled.
+ .
+ The defaults are set through a GSettings override and the Plymouth theme
+ is selected with plymouth-set-default-theme; files of other packages are
+ never modified.

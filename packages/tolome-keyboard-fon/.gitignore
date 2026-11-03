@@ -1,0 +1,10 @@
+*.deb
+*.buildinfo
+*.changes
+.debhelper/
+debian/.debhelper/
+debian/*.substvars
+debian/*.debhelper.log
+debian/files
+debian/tolome-keyboard-fon/
+debian/debhelper-build-stamp

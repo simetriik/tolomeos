@@ -1,0 +1,6 @@
+tolome-dada (0.1.0) UNRELEASED; urgency=medium
+
+  * Initial packaging: "dada" wrapper around sudo-rs, bash completion and
+    French manual page. No Debian package ships a command named "dada".
+
+ -- Anhky <dev@tolome.net>  Tue, 03 Nov 2026 23:00:00 +0100

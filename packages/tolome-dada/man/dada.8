@@ -1,0 +1,36 @@
+.\" Short English fallback page; the full manual is in French (dada.fr.8).
+.TH DADA 8 "November 2026" "tolome-dada" "System administration"
+.SH NAME
+dada \- run a command with administrator rights
+.SH SYNOPSIS
+.B dada
+[\fIOPTION\fR]... [\fICOMMAND\fR [\fIARGUMENT\fR]...]
+.SH DESCRIPTION
+.B dada
+("His Majesty" in Fon) is the administration command of Tolome. It runs a command
+as another user, \fIroot\fR by default, through
+.BR sudo\-rs (8),
+with exactly the same arguments. The authorization policy stays in
+.I /etc/sudoers
+and
+.IR /etc/sudoers.d .
+The classic
+.BR sudo (8)
+command stays installed and unchanged. Removing the package \fBtolome\-dada\fR
+only removes \fBdada\fR.
+.PP
+All options are those of
+.BR sudo\-rs (8).
+The complete manual is available in French:
+.B man \-L fr dada
+.SH EXAMPLES
+.nf
+dada nala install vim
+dada apt update
+dada \-i
+.fi
+.SH SEE ALSO
+.BR sudo\-rs (8),
+.BR sudoers (5),
+.BR nala (8),
+.BR apt (8)

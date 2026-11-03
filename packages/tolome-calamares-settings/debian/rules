@@ -1,0 +1,22 @@
+#!/usr/bin/make -f
+
+SRC = branding/src
+OUT = build/branding
+
+%:
+	dh $@
+
+# Exporte les images du branding en PNG.
+override_dh_auto_build:
+	mkdir -p $(OUT)
+	rsvg-convert -w 256 -h 256 $(SRC)/symbole.svg -o $(OUT)/tolome-logo.png
+	rsvg-convert -h 300 $(SRC)/logo-carre.svg -o $(OUT)/welcome.png
+	rsvg-convert -w 1280 -h 720 $(SRC)/tolome-fond-ganvie.svg -o $(OUT)/slide1.png
+	rsvg-convert -w 1280 -h 720 $(SRC)/tolome-fond-porto-novo.svg -o $(OUT)/slide2.png
+	rsvg-convert -w 1280 -h 720 $(SRC)/tolome-fond-ouidah.svg -o $(OUT)/slide3.png
+
+override_dh_auto_clean:
+	rm -rf build
+
+override_dh_installgsettings:
+	dh_installgsettings --priority=96

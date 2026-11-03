@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "remove" ] || [ "$1" = "abort-install" ]; then
+    # Rend os-release à base-files.
+    dpkg-divert --package tolome-base --remove --rename /usr/lib/os-release
+    # Rend ~/.face (image de profil par défaut) à desktop-base.
+    dpkg-divert --package tolome-base --remove --rename /etc/skel/.face
+fi
+
+#DEBHELPER#
+
+exit 0

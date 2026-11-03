@@ -1,0 +1,38 @@
+#!/usr/bin/make -f
+
+LOGOS = artwork
+VL = build/vendor-logos
+EM = build/emblems
+
+%:
+	dh $@
+
+# Exporte les logos en PNG pour GDM (logos du fournisseur) et les emblèmes.
+override_dh_auto_build:
+	mkdir -p $(VL) $(EM)
+	for s in 64 128 256; do \
+	  rsvg-convert -w $$s -h $$s $(LOGOS)/symbole.svg -o $(VL)/logo-$$s.png; \
+	  rsvg-convert -h $$s $(LOGOS)/logo-horizontal-inverse.svg -o $(VL)/logo-text-$$s.png; \
+	  cp $(VL)/logo-text-$$s.png $(VL)/logo-text-version-$$s.png; \
+	  rsvg-convert -w $$s -h $$s $(LOGOS)/symbole.svg -o $(EM)/emblem-vendor-$$s.png; \
+	  rsvg-convert -w $$s -h $$s $(LOGOS)/symbole-monochrome-noir.svg -o $(EM)/emblem-vendor-symbolic-$$s.png; \
+	  rsvg-convert -w $$s -h $$s $(LOGOS)/symbole-monochrome-blanc.svg -o $(EM)/emblem-vendor-white-$$s.png; \
+	done
+	# Image de profil par défaut des nouveaux utilisateurs (~/.face via /etc/skel)
+	rsvg-convert -w 256 -h 256 $(LOGOS)/symbole.svg -o build/face.png
+	cp $(LOGOS)/symbole.svg $(VL)/logo.svg
+	cp $(LOGOS)/logo-horizontal-inverse.svg $(VL)/logo-text.svg
+	cp $(LOGOS)/logo-horizontal-inverse.svg $(VL)/logo-text-version.svg
+	cp $(LOGOS)/symbole.svg $(EM)/emblem-vendor-scalable.svg
+	cp $(LOGOS)/symbole-monochrome-noir.svg $(EM)/emblem-vendor-symbolic-scalable.svg
+	cp $(LOGOS)/symbole-monochrome-blanc.svg $(EM)/emblem-vendor-white-scalable.svg
+
+override_dh_auto_clean:
+	rm -rf build
+
+override_dh_install:
+	dh_install
+	install -D -m 644 build/face.png debian/tolome-base/etc/skel/.face
+
+override_dh_installgsettings:
+	dh_installgsettings --priority=20

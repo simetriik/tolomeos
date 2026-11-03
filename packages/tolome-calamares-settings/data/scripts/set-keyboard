@@ -1,0 +1,69 @@
+#!/bin/sh
+# Clavier du système installé : la disposition choisie dans Calamares passe en
+# premier, « fon » est ajoutée en seconde (Alt+Maj pour basculer).
+#
+# Principe : la disposition avec laquelle le mot de passe est tapé pendant
+# l'installation doit être celle de l'écran de connexion, du verrouillage et de
+# la console. /etc/default/keyboard est la seule source de vérité.
+#
+# Variables d'environnement (pour les tests uniquement) :
+#   TOLOME_KEYBOARD_FILE  fichier clavier (défaut : /etc/default/keyboard)
+#   TOLOME_DCONF_FILE     base dconf système (défaut : /etc/dconf/db/local.d/00-tolome)
+#   TOLOME_NO_DCONF_UPDATE=1  ne pas lancer « dconf update »
+set -e
+
+F="${TOLOME_KEYBOARD_FILE:-/etc/default/keyboard}"
+D="${TOLOME_DCONF_FILE:-/etc/dconf/db/local.d/00-tolome}"
+
+XKBMODEL=""
+XKBLAYOUT=""
+XKBVARIANT=""
+XKBOPTIONS=""
+BACKSPACE=""
+if [ -f "$F" ]; then
+    . "$F"
+fi
+
+: "${XKBMODEL:=pc105}"
+: "${BACKSPACE:=guess}"
+OPTION="grp:alt_shift_toggle"
+
+# Si Calamares a déjà écrit plusieurs dispositions, on ne touche à rien.
+case "$XKBLAYOUT" in
+    *,*) exit 0 ;;
+esac
+
+LAYOUT="${XKBLAYOUT:-us}"
+VARIANT="$XKBVARIANT"
+
+if [ "$LAYOUT" = "fon" ]; then
+    NEW_LAYOUT="fon,fr"
+else
+    NEW_LAYOUT="$LAYOUT,fon"
+fi
+# La variante du premier clavier est conservée ; la seconde est vide.
+NEW_VARIANT="$VARIANT,"
+
+# Options : conserve celles de Calamares, ajoute la bascule Alt+Maj.
+case ",$XKBOPTIONS," in
+    *",$OPTION,"*) NEW_OPTIONS="$XKBOPTIONS" ;;
+    ",,")          NEW_OPTIONS="$OPTION" ;;
+    *)             NEW_OPTIONS="$XKBOPTIONS,$OPTION" ;;
+esac
+
+printf '%s\n' \
+    "XKBMODEL=\"$XKBMODEL\"" \
+    "XKBLAYOUT=\"$NEW_LAYOUT\"" \
+    "XKBVARIANT=\"$NEW_VARIANT\"" \
+    "XKBOPTIONS=\"$NEW_OPTIONS\"" \
+    "BACKSPACE=\"$BACKSPACE\"" > "$F"
+
+# Système installé uniquement : retire les sources de saisie figées de la base
+# dconf système (réservées à la session live), afin que la session et l'écran
+# de verrouillage suivent /etc/default/keyboard comme GDM.
+if [ -f "$D" ]; then
+    sed -i '/^\[org\/gnome\/desktop\/input-sources\]/,/^$/d' "$D"
+    if [ -z "${TOLOME_NO_DCONF_UPDATE:-}" ] && command -v dconf >/dev/null 2>&1; then
+        dconf update
+    fi
+fi

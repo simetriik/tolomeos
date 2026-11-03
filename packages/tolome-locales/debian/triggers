@@ -1,0 +1,6 @@
+# Quand le paquet « locales » met à jour SUPPORTED (déplacé en .distrib par le
+# détournement), les sources fr_FR (copiées par fr_BJ) ou les charmaps, on
+# régénère SUPPORTED et on recompile les locales de Tɔlɔmɛ.
+interest-noawait /usr/share/i18n/SUPPORTED.distrib
+interest-noawait /usr/share/i18n/locales/fr_FR
+interest-noawait /usr/share/i18n/charmaps/UTF-8.gz

@@ -1,0 +1,144 @@
+.\" Page de manuel de dada(8), en français.
+.TH DADA 8 "novembre 2026" "tolome-dada" "Administration système"
+.SH NOM
+dada \- exécuter une commande avec les droits d'administration
+.SH SYNOPSIS
+.B dada
+[\fIOPTION\fR]... [\fICOMMANDE\fR [\fIARGUMENT\fR]...]
+.br
+.B dada
+.B \-i
+|
+.B \-s
+.SH DESCRIPTION
+.B dada
+signifie « Sa Majesté » en fon. C'est la commande d'administration de Tɔlɔmɛ :
+elle exécute une commande avec les droits d'un autre utilisateur, par défaut
+.IR root ,
+en s'appuyant sur
+.BR sudo\-rs (8),
+l'implémentation de
+.BR sudo
+écrite en Rust.
+.PP
+.B dada
+n'ajoute aucune règle : elle appelle
+.B sudo\-rs
+avec exactement les mêmes arguments. La politique d'autorisation (qui peut faire
+quoi, avec ou sans mot de passe) reste celle de
+.IR /etc/sudoers
+et des fichiers de
+.IR /etc/sudoers.d .
+Les membres du groupe
+.I sudo
+peuvent donc l'utiliser ; c'est le cas du premier utilisateur créé par
+l'installateur.
+.SH OPTIONS
+Ce sont les options de
+.BR sudo\-rs (8) :
+.TP
+.BR \-B ", " \-\-bell
+fait sonner la cloche du terminal à la demande du mot de passe.
+.TP
+.BR \-D " \fIrépertoire\fR, " \-\-chdir =\fIrépertoire\fR
+exécute la commande dans ce répertoire.
+.TP
+.BR \-g " \fIgroupe\fR, " \-\-group =\fIgroupe\fR
+exécute la commande avec ce groupe principal.
+.TP
+.BR \-h ", " \-\-help
+affiche l'aide.
+.TP
+.BR \-i ", " \-\-login
+ouvre un shell de connexion de l'utilisateur cible.
+.TP
+.BR \-K ", " \-\-remove\-timestamp
+oublie toutes les authentifications mémorisées.
+.TP
+.BR \-k ", " \-\-reset\-timestamp
+oublie l'authentification mémorisée de la session courante.
+.TP
+.BR \-n ", " \-\-non\-interactive
+ne demande jamais de mot de passe ; échoue s'il en faut un.
+.TP
+.BR \-S ", " \-\-stdin
+lit le mot de passe sur l'entrée standard.
+.TP
+.BR \-s ", " \-\-shell
+ouvre un shell avec les droits demandés.
+.TP
+.BR \-u " \fIutilisateur\fR, " \-\-user =\fIutilisateur\fR
+exécute la commande en tant que cet utilisateur.
+.TP
+.BR \-V ", " \-\-version
+affiche la version.
+.TP
+.BR \-v ", " \-\-validate
+renouvelle l'authentification sans exécuter de commande.
+.SH EXEMPLES
+Installer un paquet avec nala :
+.PP
+.RS
+.nf
+dada nala install vim
+.fi
+.RE
+.PP
+Mettre à jour le système avec apt :
+.PP
+.RS
+.nf
+dada apt update && dada apt full\-upgrade
+.fi
+.RE
+.PP
+Ouvrir un shell d'administration :
+.PP
+.RS
+.nf
+dada \-i
+.fi
+.RE
+.PP
+Lire un fichier d'un autre utilisateur :
+.PP
+.RS
+.nf
+dada \-u alice cat ~alice/notes.txt
+.fi
+.RE
+.SH COMPLÉTION
+La touche de tabulation complète les options, les utilisateurs et les groupes, puis
+la commande à exécuter comme si elle était tapée seule
+(\fBdada apt in\fR<Tab>). Cela demande le paquet
+.BR bash\-completion .
+.SH FICHIERS
+.TP
+.I /etc/sudoers
+politique d'autorisation.
+.TP
+.I /etc/sudoers.d/
+fragments de politique (installateur, session live…).
+.TP
+.I /usr/bin/sudo\-rs
+programme appelé par dada.
+.SH COMPATIBILITÉ ET RETOUR ARRIÈRE
+La commande
+.BR sudo (8)
+d'origine reste installée et fonctionne comme avant : les scripts qui l'appellent ne
+sont pas modifiés. Ses fichiers de configuration PAM sont aussi utilisés par
+.BR sudo\-rs .
+Désinstaller le paquet
+.B tolome\-dada
+supprime seulement la commande
+.B dada
+et sa complétion ; le système revient à l'usage de
+.BR sudo .
+.SH VOIR AUSSI
+.BR sudo\-rs (8),
+.BR visudo\-rs (8),
+.BR sudoers (5),
+.BR nala (8),
+.BR apt (8)
+.SH AUTEUR
+Simetriik Solutions, pour Tɔlɔmɛ.

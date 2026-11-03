@@ -1,0 +1,24 @@
+MARQUE : Tɔlɔmɛ
+==============
+
+Le nom « Tɔlɔmɛ » et le logo baobab sont des marques de Simetriik Solutions,
+filiale de Nemim Sarl.
+
+Les fichiers de ce paquet (fonds d'écran, icônes, logos) sont publiés sous
+licence CC-BY-SA-4.0, qui ne concède aucun droit sur les marques.
+
+Redistribution
+--------------
+- Autorisée avec Tɔlɔmɛ non modifiée, c'est-à-dire avec le nom et le logo
+  tels que fournis par ce paquet.
+- Interdite, sans autorisation écrite préalable de Simetriik Solutions :
+  * pour un autre produit ou une autre distribution ;
+  * pour une version modifiée du nom ou du logo.
+
+Toute version modifiée ou dérivée doit retirer le nom « Tɔlɔmɛ » et le logo
+baobab, et utiliser une identité propre.
+
+Les contours des lettres du nom dérivent de la police Montserrat
+(licence OFL-1.1, voir /usr/share/doc/tolome-artwork/copyright).
+
+Contact : Simetriik Solutions <dev@tolome.net>

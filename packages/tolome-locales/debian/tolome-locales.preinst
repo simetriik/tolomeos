@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+
+SUPP=/usr/share/i18n/SUPPORTED
+
+if [ "$1" = "install" ] || [ "$1" = "upgrade" ]; then
+    # Détourne SUPPORTED de « locales » : la version de Tɔlɔmɛ (originale + nos
+    # locales) est générée par locales-update à partir du fichier .distrib.
+    dpkg-divert --package tolome-locales --add --rename \
+        --divert "$SUPP.distrib" "$SUPP"
+    # Évite que SUPPORTED soit absent entre le détournement et la génération.
+    if [ ! -e "$SUPP" ] && [ -f "$SUPP.distrib" ]; then
+        cp -p "$SUPP.distrib" "$SUPP"
+    fi
+fi
+
+#DEBHELPER#
+
+exit 0

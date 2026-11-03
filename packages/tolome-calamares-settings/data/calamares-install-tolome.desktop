@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Installer Tɔlɔmɛ
+GenericName=Installateur Calamares
+Exec=calamares-install-tolome
+Comment=Installer Tɔlɔmɛ sur cet ordinateur
+Keywords=calamares;system;install;tolome;installer;installateur
+Icon=tolome
+Terminal=false
+Categories=Qt;System;
+StartupWMClass=calamares
+StartupNotify=True

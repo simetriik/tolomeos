@@ -1,0 +1,61 @@
+#!/bin/sh
+# Garde-fou de construction : fait échouer la construction si l'image ne respecte
+# pas les choix de Tɔlɔmɛ.
+#  - Evolution (l'application) et le méta-paquet gnome absents ; evolution-data-server
+#    reste nécessaire à GNOME Agenda, Contacts et au calendrier du menu horloge ;
+#  - un seul terminal : GNOME Terminal (ni Zutty ni xterm) ;
+#  - Thunderbird en français, sudo-rs, sudo, nala et les paquets Tɔlɔmɛ présents ;
+#  - le thème de l'écran de connexion contient le fond, l'image de profil par défaut
+#    est celle de Tɔlɔmɛ, et la commande « dada » est unique ;
+#  - la locale fr_BJ est compilée et listée dans SUPPORTED (détourné), sans changer
+#    la langue par défaut (LANG reste fr_FR.UTF-8).
+set -e
+
+installe() {
+    [ "$(dpkg-query -W -f='${Status}' "$1" 2>/dev/null)" = "install ok installed" ]
+}
+erreur() { echo "ERREUR : $*" >&2; exit 1; }
+
+for p in evolution evolution-plugins gnome zutty xterm; do
+    installe "$p" && erreur "le paquet '$p' est installé (à ne pas installer : Evolution, méta-paquet gnome ou second terminal)."
+done
+for p in evolution-data-server gnome-calendar gnome-contacts thunderbird thunderbird-l10n-fr gnome-terminal \
+         sudo-rs sudo nala tolome-base tolome-artwork tolome-keyboard-fon tolome-dada tolome-gdm-theme \
+         tolome-calamares-settings tolome-locales; do
+    installe "$p" || erreur "le paquet '$p' est absent (requis par Tɔlɔmɛ)."
+done
+
+# Thème de l'écran de connexion : fond de Tɔlɔmɛ intégré (mode image, par défaut)
+THEME=/usr/share/gnome-shell/gnome-shell-theme.gresource
+if ! gresource list "$THEME" | grep -q tolome-gdm-background.png; then
+    erreur "le thème de GNOME Shell ne contient pas le fond de l'écran de connexion (tolome-gdm-theme)."
+fi
+[ -f "$THEME.distrib" ] || erreur "le thème d'origine ($THEME.distrib) est absent : détournement manquant."
+
+# Image de profil par défaut : PNG de Tɔlɔmɛ, et non plus le SVG de desktop-base
+if [ "$(head -c 4 /etc/skel/.face | od -An -c | tr -d ' ')" != "211PNG" ] && ! head -c 8 /etc/skel/.face | grep -q PNG; then
+    erreur "/etc/skel/.face n'est pas l'image de Tɔlɔmɛ (PNG)."
+fi
+
+# os-release : Tɔlɔmɛ, ID_LIKE=debian
+grep -q '^ID=tolome$' /usr/lib/os-release && grep -q '^ID_LIKE=debian$' /usr/lib/os-release \
+    || erreur "os-release ne décrit pas Tɔlɔmɛ (ID=tolome, ID_LIKE=debian)."
+
+# « dada » : une seule commande de ce nom, fournie par tolome-dada
+[ "$(dpkg -S /usr/bin/dada 2>/dev/null | cut -d: -f1)" = "tolome-dada" ] || erreur "/usr/bin/dada n'appartient pas à tolome-dada."
+
+# Locale fr_BJ : compilée, listée par locale -a et par SUPPORTED (Calamares), SUPPORTED
+# d'origine conservé en .distrib ; la langue par défaut reste fr_FR.UTF-8.
+locale -a | grep -qx 'fr_BJ.utf8' || erreur "la locale fr_BJ.utf8 n'est pas listée par « locale -a » (tolome-locales)."
+[ -f /usr/lib/locale/fr_BJ.utf8/.tolome-locales ] || erreur "/usr/lib/locale/fr_BJ.utf8 n'a pas été compilée par tolome-locales."
+grep -qx 'fr_BJ.UTF-8 UTF-8' /usr/share/i18n/SUPPORTED || erreur "SUPPORTED ne contient pas fr_BJ.UTF-8 (Calamares ne la proposerait pas)."
+[ -f /usr/share/i18n/SUPPORTED.distrib ] || erreur "SUPPORTED.distrib absent : détournement de SUPPORTED manquant."
+grep -qx 'fr_FR.UTF-8 UTF-8' /usr/share/i18n/SUPPORTED.distrib || erreur "SUPPORTED.distrib ne ressemble pas au fichier d'origine de locales."
+if [ -f /etc/default/locale ] && grep -q 'fr_BJ' /etc/default/locale; then
+    erreur "/etc/default/locale désigne fr_BJ : la langue par défaut ne doit pas changer."
+fi
+if [ -f /etc/default/locale ] && ! grep -q '^LANG=.*fr_FR.UTF-8' /etc/default/locale; then
+    erreur "/etc/default/locale : LANG n'est pas fr_FR.UTF-8."
+fi
+
+echo "Contrôle des paquets Tɔlɔmɛ : OK"

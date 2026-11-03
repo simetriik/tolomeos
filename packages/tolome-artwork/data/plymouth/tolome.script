@@ -1,0 +1,9 @@
+# Thème Plymouth Tɔlɔmɛ : logo centré sur fond indigo #23325E.
+Window.SetBackgroundTopColor(0.137, 0.196, 0.369);
+Window.SetBackgroundBottomColor(0.137, 0.196, 0.369);
+
+logo.image = Image("logo.png");
+logo.sprite = Sprite(logo.image);
+logo.sprite.SetX(Window.GetX() + (Window.GetWidth() - logo.image.GetWidth()) / 2);
+logo.sprite.SetY(Window.GetY() + (Window.GetHeight() - logo.image.GetHeight()) / 2);
+logo.sprite.SetOpacity(1);

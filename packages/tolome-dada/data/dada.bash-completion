@@ -1,0 +1,49 @@
+# Complétion bash de dada(8) : mêmes options et même logique que sudo-rs(8).
+# Les arguments de la commande à exécuter sont complétés comme si elle était
+# tapée seule (dada nala ins<TAB>, dada apt <TAB>…).
+_comp_cmd_dada()
+{
+    local cur prev words cword was_split comp_args
+    _comp_initialize -s -- "$@" || return
+
+    local i
+    for ((i = 1; i <= cword; i++)); do
+        if [[ ${words[i]} != -* ]]; then
+            # première « vraie » commande : complétion déléguée
+            local PATH=$PATH:/sbin:/usr/sbin:/usr/local/sbin
+            local _comp_root_command=$1
+            _comp_command_offset "$i"
+            return
+        fi
+        # options qui prennent un argument : -u/--user, -g/--group, -D/--chdir
+        [[ ${words[i]} == @(--@(user|group|chdir)|-[ugD]) ]] && ((i++))
+    done
+
+    case "$prev" in
+        --user | -u)
+            _comp_compgen -- -u
+            return
+            ;;
+        --group | -g)
+            _comp_compgen -- -g
+            return
+            ;;
+        --chdir | -D)
+            _comp_compgen_filedir -d
+            return
+            ;;
+    esac
+
+    [[ $was_split ]] && return
+
+    if [[ $cur == -* ]]; then
+        _comp_compgen -- -W '-B --bell -D --chdir= -g --group= -h --help -i --login
+            -K --remove-timestamp -k --reset-timestamp -n --non-interactive
+            -S --stdin -s --shell -u --user= -V --version -v --validate'
+        [[ ${COMPREPLY-} == *= ]] && compopt -o nospace
+        return
+    fi
+} &&
+    complete -F _comp_cmd_dada dada
+
+# ex: filetype=sh

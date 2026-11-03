@@ -1,0 +1,9 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+override_dh_install:
+	dh_install
+	install -D -m 644 data/dada.bash-completion \
+	  debian/tolome-dada/usr/share/bash-completion/completions/dada

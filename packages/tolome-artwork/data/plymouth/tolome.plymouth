@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Tɔlɔmɛ
+Description=Logo Tɔlɔmɛ sur fond indigo
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/tolome
+ScriptFile=/usr/share/plymouth/themes/tolome/tolome.script

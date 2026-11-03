@@ -1,0 +1,16 @@
+artwork/fonds/*.svg usr/share/backgrounds/tolome/
+artwork/logos/*.svg usr/share/tolome/artwork/logos/
+data/backgrounds/tolome.xml usr/share/gnome-background-properties/
+data/plymouth/tolome.plymouth usr/share/plymouth/themes/tolome/
+data/plymouth/tolome.script usr/share/plymouth/themes/tolome/
+build/plymouth/logo.png usr/share/plymouth/themes/tolome/
+data/grub/theme.txt usr/share/grub/themes/tolome/
+build/grub/logo.png usr/share/grub/themes/tolome/
+build/grub/background.png usr/share/grub/themes/tolome/
+data/grub.d/90_tolome-artwork.cfg etc/default/grub.d/
+data/MARQUE usr/share/doc/tolome-artwork/
+build/grub-background.png usr/share/tolome/
+sounds/accueil.wav usr/share/sounds/tolome/
+sounds/son-accueil.py usr/share/doc/tolome-artwork/examples/
+data/login-sound/tolome-login-sound usr/lib/tolome/
+data/login-sound/tolome-login-sound.desktop etc/xdg/autostart/

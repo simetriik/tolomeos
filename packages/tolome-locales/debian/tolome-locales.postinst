@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    configure|triggered)
+        /usr/lib/tolome/locales-update update || true
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0

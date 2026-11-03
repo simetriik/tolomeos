@@ -1,0 +1,34 @@
+tolome-calamares-settings (0.1.3) UNRELEASED; urgency=medium
+
+  * Live dock: Thunderbird replaces Evolution; drop rhythmbox, which is not
+    installed.
+
+ -- Anhky <dev@tolome.net>  Tue, 03 Nov 2026 19:10:00 +0100
+
+tolome-calamares-settings (0.1.2) UNRELEASED; urgency=medium
+
+  * Keyboard: the layout chosen in Calamares is now first and "fon" second
+    (e.g. fr,fon), so that the password typed during installation matches the
+    login screen, the lock screen and the console. XKBVARIANT and XKBOPTIONS
+    are kept.
+  * Installed system only: drop the fixed GNOME input sources from the system
+    dconf database so that the session follows /etc/default/keyboard.
+  * Add tests/test-set-keyboard.sh.
+
+ -- Anhky <dev@tolome.net>  Tue, 03 Nov 2026 17:00:00 +0100
+
+tolome-calamares-settings (0.1.1) UNRELEASED; urgency=medium
+
+  * Also remove calamares itself from the installed system, so that the
+    "Install System" launcher (calamares.desktop) does not remain.
+
+ -- Anhky <dev@tolome.net>  Tue, 03 Nov 2026 16:00:00 +0100
+
+tolome-calamares-settings (0.1.0) UNRELEASED; urgency=medium
+
+  * Initial packaging: Tolome branding for Calamares, settings and modules
+    reused from calamares-settings-debian, fon,fr keyboard step.
+
+  * Use https://tolome.net for the project URLs.
+
+ -- Anhky <dev@tolome.net>  Tue, 03 Nov 2026 15:00:00 +0100

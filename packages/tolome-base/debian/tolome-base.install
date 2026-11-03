@@ -1,0 +1,5 @@
+data/os-release usr/lib/
+data/grub.d/90_tolome-base.cfg etc/default/grub.d/
+build/vendor-logos/* usr/share/tolome/vendor-logos/
+build/emblems/* usr/share/tolome/emblems/
+data/xdg/mimeapps.list etc/xdg/

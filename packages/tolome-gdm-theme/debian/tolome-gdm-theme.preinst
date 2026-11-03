@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+
+THEME=/usr/share/gnome-shell/gnome-shell-theme.gresource
+
+if [ "$1" = "install" ] || [ "$1" = "upgrade" ]; then
+    # Détourne le thème d'origine de gnome-shell-common ; le nôtre est généré
+    # par gdm-theme-update à partir du fichier .distrib.
+    dpkg-divert --package tolome-gdm-theme --add --rename \
+        --divert "$THEME.distrib" "$THEME"
+    # Évite que le thème soit absent entre le détournement et la génération.
+    if [ ! -e "$THEME" ] && [ -f "$THEME.distrib" ]; then
+        cp -p "$THEME.distrib" "$THEME"
+    fi
+fi
+
+#DEBHELPER#
+
+exit 0

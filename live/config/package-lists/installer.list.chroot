@@ -1,0 +1,4 @@
+# Installateur graphique ; le branding et les réglages viennent de
+# tolome-calamares-settings (config/packages.chroot), qui remplace
+# calamares-settings-debian.
+calamares

@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "install" ] || [ "$1" = "upgrade" ]; then
+    # Détourne le os-release de base-files : le nôtre prend sa place.
+    dpkg-divert --package tolome-base --add --rename \
+        --divert /usr/lib/os-release.distrib /usr/lib/os-release
+    # Détourne l'image de profil par défaut (spirale Debian) de desktop-base.
+    dpkg-divert --package tolome-base --add --rename \
+        --divert /etc/skel/.face.distrib /etc/skel/.face
+fi
+
+#DEBHELPER#
+
+exit 0

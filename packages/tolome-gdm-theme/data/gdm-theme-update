@@ -1,0 +1,128 @@
+#!/bin/sh
+# Régénère le thème de GNOME Shell avec le fond de l'écran de connexion de
+# Tɔlɔmɛ, à partir du thème d'origine détourné (gnome-shell-theme.gresource.distrib).
+# Appelé par la configuration du paquet et par le trigger, donc à chaque mise à
+# jour de gnome-shell-common. En cas d'échec, le thème d'origine est restauré.
+#
+# Variables d'environnement (tests uniquement) :
+#   TOLOME_GDM_ORIG   thème d'origine   (défaut : <thème>.distrib)
+#   TOLOME_GDM_DEST   thème à produire  (défaut : /usr/share/gnome-shell/gnome-shell-theme.gresource)
+#   TOLOME_GDM_CONF   fichier de réglage (défaut : /etc/tolome/gdm-background.conf)
+#   TOLOME_GDM_IMAGE  image de fond      (défaut : /usr/share/tolome/gdm-background.png)
+set -u
+
+DEST="${TOLOME_GDM_DEST:-/usr/share/gnome-shell/gnome-shell-theme.gresource}"
+ORIG="${TOLOME_GDM_ORIG:-$DEST.distrib}"
+CONF="${TOLOME_GDM_CONF:-/etc/tolome/gdm-background.conf}"
+IMAGE="${TOLOME_GDM_IMAGE:-/usr/share/tolome/gdm-background.png}"
+PREFIX="/org/gnome/shell/theme"
+INDIGO="#23325E"
+TAG="tolome-gdm-theme"
+
+log() { echo "$TAG: $*" >&2; logger -t "$TAG" -- "$*" 2>/dev/null || true; }
+
+# Remet le thème d'origine à la place du nôtre (copie, jamais de lien).
+restore() {
+    if [ -f "$ORIG" ]; then
+        cp -f "$ORIG" "$DEST.new" && mv -f "$DEST.new" "$DEST"
+    fi
+}
+
+MODE=image
+if [ -f "$CONF" ]; then
+    # shellcheck disable=SC1090
+    . "$CONF"
+fi
+case "$MODE" in
+    image|flat|off) ;;
+    *) log "MODE inconnu '$MODE' dans $CONF, repli sur « off »"; MODE=off ;;
+esac
+
+if [ ! -f "$ORIG" ]; then
+    log "thème d'origine introuvable ($ORIG) : rien à faire"
+    exit 0
+fi
+
+if [ "$MODE" = "off" ]; then
+    restore
+    log "mode off : thème d'origine rétabli"
+    exit 0
+fi
+
+if [ "$MODE" = "image" ] && [ ! -f "$IMAGE" ]; then
+    log "image $IMAGE absente, repli sur l'aplat indigo"
+    MODE=flat
+fi
+
+for outil in gresource glib-compile-resources sed; do
+    command -v "$outil" >/dev/null 2>&1 || { log "outil manquant : $outil, thème d'origine conservé"; restore; exit 0; }
+done
+
+W=$(mktemp -d) || { log "mktemp a échoué"; restore; exit 0; }
+trap 'rm -rf "$W"' EXIT
+
+# 1. Extraction de toutes les ressources d'origine
+if ! gresource list "$ORIG" > "$W/liste.txt" 2>"$W/err.txt" || [ ! -s "$W/liste.txt" ]; then
+    log "lecture du thème d'origine impossible : $(cat "$W/err.txt")"; restore; exit 0
+fi
+mkdir -p "$W/src"
+while IFS= read -r res; do
+    f="${res#"$PREFIX"/}"
+    case "$f" in */*) mkdir -p "$W/src/$(dirname "$f")" ;; esac
+    if ! gresource extract "$ORIG" "$res" > "$W/src/$f"; then
+        log "extraction de $res impossible"; restore; exit 0
+    fi
+done < "$W/liste.txt"
+
+# 2. Règle du fond de l'écran de connexion dans chaque feuille de style
+if [ "$MODE" = "image" ]; then
+    cp "$IMAGE" "$W/src/tolome-gdm-background.png"
+    BLOC="#lockDialogGroup {\n  background-color: $INDIGO;\n  background-image: url(\"tolome-gdm-background.png\");\n  background-size: cover;\n  background-position: center; }"
+else
+    BLOC="#lockDialogGroup {\n  background-color: $INDIGO; }"
+fi
+n=0
+for css in "$W"/src/gnome-shell-*.css; do
+    [ -f "$css" ] || continue
+    if grep -q '^#lockDialogGroup {' "$css"; then
+        # remplace le bloc « #lockDialogGroup { … } » (jusqu'à la première accolade fermante)
+        sed -i "/^#lockDialogGroup {/,/}/c\\
+$(printf '%s' "$BLOC" | sed 's/\\n/\\\n/g')" "$css"
+        n=$((n + 1))
+    fi
+done
+if [ "$n" -eq 0 ]; then
+    log "règle #lockDialogGroup introuvable (version de GNOME Shell inattendue) : thème d'origine conservé"
+    restore; exit 0
+fi
+
+# 3. Compilation
+{
+    echo '<?xml version="1.0" encoding="UTF-8"?>'
+    echo '<gresources><gresource prefix="'"$PREFIX"'">'
+    (cd "$W/src" && find . -type f | sed 's#^\./##' | sort) | while IFS= read -r f; do
+        echo "  <file>$f</file>"
+    done
+    echo '</gresource></gresources>'
+} > "$W/tolome.gresource.xml"
+if ! glib-compile-resources --sourcedir="$W/src" --target="$W/nouveau.gresource" "$W/tolome.gresource.xml" 2>"$W/err.txt"; then
+    log "compilation impossible : $(cat "$W/err.txt")"; restore; exit 0
+fi
+
+# 4. Contrôle du résultat avant installation
+gresource list "$W/nouveau.gresource" > "$W/liste2.txt" 2>/dev/null
+attendu=$(wc -l < "$W/liste.txt"); [ "$MODE" = "image" ] && attendu=$((attendu + 1))
+obtenu=$(wc -l < "$W/liste2.txt")
+if [ "$obtenu" -ne "$attendu" ] || ! gresource extract "$W/nouveau.gresource" "$PREFIX/gnome-shell-dark.css" | grep -q "$INDIGO"; then
+    log "contrôle du thème produit échoué ($obtenu ressources, $attendu attendues) : thème d'origine conservé"
+    restore; exit 0
+fi
+
+# 5. Installation atomique
+chmod 644 "$W/nouveau.gresource"
+if cp -f "$W/nouveau.gresource" "$DEST.new" && mv -f "$DEST.new" "$DEST"; then
+    log "thème de l'écran de connexion appliqué (mode $MODE, $n feuilles de style)"
+else
+    log "installation impossible"; restore
+fi
+exit 0

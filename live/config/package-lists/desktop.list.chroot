@@ -1,0 +1,14 @@
+# Bureau GNOME et environnement français
+task-gnome-desktop
+task-french
+task-french-desktop
+live-boot
+live-config
+live-config-systemd
+
+# Terminal : GNOME Terminal, listé explicitement. Plusieurs paquets (xorg,
+# libfile-desktopentry-perl…) demandent « x-terminal-emulator » ; sans fournisseur
+# déjà choisi, apt en prend un au hasard (Zutty). Avec gnome-terminal sur la
+# ligne de commande, la dépendance est satisfaite par lui. N'épinglez pas Zutty :
+# apt choisirait alors un autre terminal (Tilix).
+gnome-terminal

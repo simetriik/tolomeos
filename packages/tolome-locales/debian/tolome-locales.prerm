@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    remove|deconfigure)
+        # Supprime les locales compilées par ce paquet (repérées par un témoin).
+        /usr/lib/tolome/locales-update clean || true
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0

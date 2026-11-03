@@ -1,0 +1,9 @@
+# Tɔlɔmɛ n'utilise pas le méta-paquet « gnome » : il dépend d'Evolution, remplacé
+# par Thunderbird. task-gnome-desktop ne fait que le recommander : apt ignore donc
+# la recommandation. Les applications utiles de « gnome » sont listées une à une
+# dans config/package-lists/apps.list.chroot.
+# Ce fichier (sans .chroot) est aussi copié dans le système final, pour qu'une
+# mise à jour ne réinstalle pas « gnome ». « apt install evolution » reste possible.
+Package: gnome
+Pin: release *
+Pin-Priority: -1

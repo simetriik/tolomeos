@@ -1,0 +1,7 @@
+#!/bin/sh
+# Retire la visite guidée de GNOME (gnome-tour) : recommandée par gnome-core
+# mais non souhaitée sur Tɔlɔmɛ.
+set -e
+if dpkg -s gnome-tour >/dev/null 2>&1; then
+    apt-get purge -y gnome-tour
+fi

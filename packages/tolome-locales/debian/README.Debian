@@ -1,0 +1,83 @@
+tolome-locales pour Debian
+==========================
+
+Ce paquet ajoute à Tɔlɔmɛ des locales que la glibc ne fournit pas. Pour l'instant :
+fr_BJ (français, Bénin). Il sert de modèle pour fon_BJ.
+
+Ce que fait le paquet
+---------------------
+* Les définitions sont dans /usr/share/tolome/i18n/locales/ ; la liste des locales à
+  compiler est /usr/share/tolome/i18n/SUPPORTED (une ligne « fr_BJ.UTF-8 UTF-8 »).
+* /usr/lib/tolome/locales-update compile chaque locale avec « localedef --no-archive »
+  dans /usr/lib/locale/<nom>.<codage>/ (par exemple fr_BJ.utf8). Aucun fichier de la
+  glibc ni du paquet « locales » n'est modifié ; locale-archive n'est pas touchée et
+  « locale-gen » n'efface pas ces dossiers.
+* La compilation a lieu à l'installation et chaque fois que « locales » met à jour
+  ses fichiers (trigger sur fr_FR, UTF-8.gz et SUPPORTED).
+* Un fichier-témoin (.tolome-locales) marque les dossiers créés par ce paquet. Une
+  locale du même nom créée par l'administrateur n'est ni remplacée ni supprimée.
+
+Pourquoi SUPPORTED est détourné
+-------------------------------
+Calamares construit sa liste de locales à partir de /usr/share/i18n/SUPPORTED, qui
+appartient au paquet « locales ». Ce fichier est détourné avec dpkg-divert
+(/usr/share/i18n/SUPPORTED.distrib) et régénéré à chaque mise à jour : original +
+locales de Tɔlɔmɛ. À la suppression du paquet, les dossiers compilés sont effacés et le
+fichier d'origine (à jour) est rendu à « locales ».
+La langue par défaut n'est pas modifiée. En revanche, à l'installation, Calamares
+peut choisir fr_BJ.UTF-8 pour les formats (nombres, dates, monnaie…) quand le lieu
+est le Bénin et la langue le français ; LANG reste fr_FR.UTF-8.
+
+fr_BJ : contenu
+---------------
+Dérivée de fr_FR (copie de CTYPE, COLLATE, MESSAGES, NUMERIC, TIME, NAME ; PAPER et
+MEASUREMENT viennent de « i18n »). Redéfinies :
+* LC_IDENTIFICATION : français, Bénin, source Tɔlɔmɛ.
+* LC_MONETARY : franc CFA (XOF), symbole « F CFA », sans décimales, symbole après le
+  montant : « 25 000 F CFA ». International (strfmon %i) : « 25 000 XOF ».
+* LC_NUMERIC : virgule décimale, espace fine insécable (U+202F) pour les milliers.
+* LC_TIME : formats français, semaine commençant le lundi.
+* LC_TELEPHONE : +229, préfixe sortant 00, formats « +%c %l » et « %l ».
+* LC_ADDRESS : Bénin, BJ, BEN, 204, code automobile DY ; pas de code postal.
+* LC_PAPER : A4 ; LC_MEASUREMENT : métrique.
+
+Écarts avec le CLDR (fr / fr_BJ)
+--------------------------------
+1. Espaces du monétaire. CLDR : 25<U+202F>000<U+00A0>F<U+202F>CFA. La glibc ne sait
+   insérer qu'une espace ordinaire (p_sep_by_space) ; l'espace insécable U+00A0 est
+   donc placée au début du symbole (currency_symbol "<U00A0>F<U202F>CFA", avec
+   p_sep_by_space 0). Le résultat est identique au CLDR. Contrepartie : localeconv()
+   renvoie un symbole qui commence par une espace insécable. Le format international
+   garde son séparateur : int_p_sep_by_space et int_n_sep_by_space valent 1.
+2. Pas de format « comptable » (parenthèses) en glibc : les montants négatifs
+   utilisent le signe « - », comme le format standard du CLDR.
+3. Semaine ISO à 4 jours minimum (copie de fr_FR). Le CLDR donne minDays=1 pour le
+   Bénin. Le changer exigerait de recopier tout LC_TIME : non fait, par choix.
+4. Téléphone : le CLDR n'a pas de données. Depuis le 30 novembre 2024, les numéros
+   béninois ont 10 chiffres et commencent par 01 ; ce 01 fait partie du numéro et
+   reste à l'international (+229 01 ...) : ce n'est pas un indicatif de zone, donc pas
+   de %a dans les formats.
+5. Adresse : pas de %z (le Bénin n'a pas de code postal général). Pas de country_isbn.
+
+Ajouter fon_BJ (ou une autre locale)
+------------------------------------
+1. Écrire /usr/share/tolome/i18n/locales/fon_BJ (dans les sources du paquet : i18n/locales/),
+   sur le modèle de fr_BJ : LC_IDENTIFICATION avec « language "Fon" », lang_name,
+   lang_ab, lang_term "fon" ; noms des jours et des mois dans LC_TIME ; LC_MONETARY,
+   LC_TELEPHONE et LC_ADDRESS repris de fr_BJ ; ne copier que ce qui existe en fon.
+2. Ajouter la ligne « fon_BJ.UTF-8 UTF-8 » à i18n/SUPPORTED.
+3. Ajouter un test à tests/ (modèle : tests/test-fr_BJ.sh) et reconstruire le paquet.
+   Rien d'autre à modifier : scripts de maintenance, trigger et détournement sont
+   génériques. Une locale sans traduction d'interface reste une locale de formats ;
+   les applications retombent sur LANGUAGE (par exemple fon:fr).
+
+Désinstallation
+---------------
+« apt remove tolome-locales » supprime les locales compilées et rend SUPPORTED à
+« locales ». Les variables LC_*/LANG qui désigneraient fr_BJ.UTF-8 (par exemple dans
+/etc/default/locale) doivent alors être changées : la locale n'existe plus.
+
+Dépannage
+---------
+* Journal : « journalctl -t tolome-locales » ou la sortie de dpkg.
+* Recompiler à la main : « sudo /usr/lib/tolome/locales-update update ».

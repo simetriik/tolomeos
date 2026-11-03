@@ -1,0 +1,5 @@
+[org/gnome/desktop/input-sources]
+sources=[('xkb', 'fon'), ('xkb', 'fr')]
+
+[org/gnome/system/location]
+enabled=false

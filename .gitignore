@@ -1,0 +1,16 @@
+# Résultats de construction (non versionnés)
+*.deb
+*.buildinfo
+*.changes
+*.iso
+*.qcow2
+*.log
+*.substvars
+debian/.debhelper/
+debian/debhelper-build-stamp
+debian/files
+debian/*/
+!debian/source/
+.build/
+tools/__pycache__/
+.env

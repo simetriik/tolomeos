@@ -1,0 +1,18 @@
+#!/bin/sh
+set -e
+
+THEME=/usr/share/gnome-shell/gnome-shell-theme.gresource
+
+case "$1" in
+    remove|abort-install)
+        # Rend le thème d'origine à gnome-shell-common.
+        if dpkg-divert --list tolome-gdm-theme 2>/dev/null | grep -q "$THEME"; then
+            rm -f "$THEME" "$THEME.new"
+            dpkg-divert --package tolome-gdm-theme --remove --rename "$THEME"
+        fi
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0

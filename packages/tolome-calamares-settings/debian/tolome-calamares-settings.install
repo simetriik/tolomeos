@@ -1,0 +1,10 @@
+conf/settings.conf etc/calamares/
+conf/modules/*.conf etc/calamares/modules/
+modules/* usr/lib/calamares/modules/
+helpers/* usr/share/calamares/helpers/
+branding/branding.desc usr/share/calamares/branding/tolome/
+branding/show.qml usr/share/calamares/branding/tolome/
+build/branding/*.png usr/share/calamares/branding/tolome/
+data/scripts/set-keyboard usr/share/tolome-calamares/
+data/calamares-install-tolome usr/bin/
+data/calamares-install-tolome.desktop usr/share/applications/

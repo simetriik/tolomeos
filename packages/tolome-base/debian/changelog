@@ -1,0 +1,33 @@
+tolome-base (0.3.1) UNRELEASED; urgency=medium
+
+  * postrm: do not lift the diversions on abort-upgrade (the old version is
+    still installed then); only on remove and abort-install.
+
+ -- Anhky <dev@tolome.net>  Tue, 03 Nov 2026 23:45:00 +0100
+
+tolome-base (0.3.0) UNRELEASED; urgency=medium
+
+  * Divert /etc/skel/.face (Debian swirl, desktop-base) and install the Tɔlɔmɛ
+    baobab on an indigo disc as the default user picture. A picture chosen in
+    Settings (AccountsService) still takes precedence.
+
+ -- Anhky <dev@tolome.net>  Tue, 03 Nov 2026 20:00:00 +0100
+
+tolome-base (0.2.0) UNRELEASED; urgency=medium
+
+  * Thunderbird replaces Evolution: set the default mail handlers
+    (mimeapps.list) and the dock favorites. evolution-data-server is kept for
+    GNOME Calendar and Contacts. The pin of the "gnome" metapackage lives in
+    the live-build configuration (lintian forbids shipping apt preferences).
+
+ -- Anhky <dev@tolome.net>  Tue, 03 Nov 2026 19:00:00 +0100
+
+tolome-base (0.1.0) UNRELEASED; urgency=medium
+
+  * Initial packaging: diverted os-release (ID=tolome, ID_LIKE=debian),
+    vendor-logos alternative for GDM, GRUB distributor "Tolome", GNOME
+    welcome tour disabled.
+
+  * Use https://tolome.net for the project URLs.
+
+ -- Anhky <dev@tolome.net>  Tue, 03 Nov 2026 14:00:00 +0100

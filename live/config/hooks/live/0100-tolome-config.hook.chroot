@@ -1,0 +1,9 @@
+#!/bin/sh
+# Fuseau horaire, locale et base dconf.
+set -e
+ln -sf /usr/share/zoneinfo/Africa/Porto-Novo /etc/localtime
+echo "Africa/Porto-Novo" > /etc/timezone
+sed -i 's/^# *fr_FR.UTF-8/fr_FR.UTF-8/' /etc/locale.gen
+locale-gen
+update-locale LANG=fr_FR.UTF-8 LC_ALL=fr_FR.UTF-8
+dconf update

@@ -1,0 +1,6 @@
+build/
+debian/.debhelper/
+debian/tolome-base/
+debian/*.substvars
+debian/debhelper-build-stamp
+debian/files

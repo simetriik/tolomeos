@@ -1,0 +1,23 @@
+Source: tolome-dada
+Section: admin
+Priority: optional
+Maintainer: Anhky <dev@tolome.net>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+
+Package: tolome-dada
+Architecture: all
+Depends: sudo-rs (>= 0.2), sudo, ${misc:Depends}
+Recommends: bash-completion
+Suggests: nala
+Description: "dada" administration command of Tolome, based on sudo-rs
+ "dada" ("His Majesty" in Fon) runs a command with administrator rights through
+ sudo-rs, the Rust implementation of sudo:
+ .
+   dada nala install vim
+ .
+ It adds no policy: the rules stay in /etc/sudoers and /etc/sudoers.d. The
+ classic "sudo" command stays installed for compatibility (its PAM files are
+ shared with sudo-rs). Bash completion and a manual page in French are
+ provided. Removing this package only removes "dada".

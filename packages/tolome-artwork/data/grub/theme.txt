@@ -1,0 +1,40 @@
+# Thème GRUB Tɔlɔmɛ : logo sur fond indigo #23325E.
+# Aplat indigo : le desktop-image est indispensable (sans lui, GRUB affiche en UEFI
+# « error: null src bitmap in grub_video_bitmap_create_scaled » après Entrée).
+desktop-image: "background.png"
+desktop-color: "#23325E"
+title-text: ""
+terminal-font: "Unifont Regular 16"
+
+# Logo à proportions fixes, tout en haut : la console (messages « Loading Linux… »)
+# couvre la zone de 17 % à 82 % de la hauteur et le couperait.
++ image {
+    file = "logo.png"
+    left = 50%-160
+    top = 2%
+}
+
++ boot_menu {
+    left = 50%-250
+    top = 38%
+    width = 500
+    height = 40%
+    item_font = "Unifont Regular 16"
+    selected_item_font = "Unifont Regular 16"
+    item_color = "#F4EDE1"
+    selected_item_color = "#E0A646"
+    item_height = 28
+    item_padding = 6
+    item_spacing = 4
+}
+
++ progress_bar {
+    id = "__timeout__"
+    left = 50%-250
+    top = 88%
+    width = 500
+    height = 6
+    fg_color = "#C98A2B"
+    bg_color = "#2E3F72"
+    border_color = "#2E3F72"
+}

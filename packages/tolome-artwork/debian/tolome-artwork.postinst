@@ -1,0 +1,17 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "configure" ]; then
+    # Sélection du thème Plymouth à la première installation uniquement,
+    # pour ne pas écraser un choix de l'administrateur lors d'une mise à jour.
+    if [ -z "$2" ] && command -v plymouth-set-default-theme >/dev/null 2>&1; then
+        plymouth-set-default-theme tolome || true
+        if command -v update-initramfs >/dev/null 2>&1; then
+            update-initramfs -u || true
+        fi
+    fi
+fi
+
+#DEBHELPER#
+
+exit 0

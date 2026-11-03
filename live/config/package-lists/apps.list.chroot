@@ -1,0 +1,27 @@
+# Applications que le méta-paquet « gnome » apportait (Depends et Recommends),
+# à l'exception d'Evolution et de ses plugins, remplacés par Thunderbird.
+# Installées explicitement : elles sont « manuelles », donc l'autoremove de
+# Calamares ne les retire pas. Le tri se fera pour l'édition légère.
+desktop-base
+network-manager
+avahi-daemon
+file-roller
+gnome-sound-recorder
+gnome-tweaks
+libgsf-bin
+libreoffice-calc
+libreoffice-impress
+libreoffice-gnome
+libreoffice-gtk3
+libreoffice-writer
+seahorse
+shotwell
+cups-pk-helper
+gstreamer1.0-libav
+gstreamer1.0-plugins-ugly
+gnome-music
+hunspell-en-us
+hyphen-en-us
+libreoffice-help-en-us
+mythes-en-us
+totem-plugins

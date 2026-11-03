@@ -1,0 +1,28 @@
+Source: tolome-base
+Section: misc
+Priority: optional
+Maintainer: Anhky <dev@tolome.net>
+Build-Depends: debhelper-compat (= 13), librsvg2-bin
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+
+Package: tolome-base
+Architecture: all
+Depends: libglib2.0-0t64, ${misc:Depends}
+Recommends: gdm3, thunderbird, thunderbird-l10n-fr
+Description: Base identity of the Tolome system
+ Gives the system its Tɔlɔmɛ identity without modifying the files of other
+ packages:
+  * /usr/lib/os-release is diverted (dpkg-divert) so that base-files can keep
+    upgrading while Tɔlɔmɛ names itself (ID=tolome, ID_LIKE=debian);
+  * the "vendor-logos" alternative gives the Tɔlɔmɛ logo to the GDM login
+    screen and to the vendor emblem, with a higher priority than desktop-base;
+  * GRUB uses the distributor name "Tolome" (menu entry and EFI directory);
+  * the default user picture (/etc/skel/.face, the Debian swirl of desktop-base)
+    is diverted and replaced by the Tɔlɔmɛ baobab; users can still pick their
+    own photo in Settings;
+  * the GNOME welcome tour is disabled;
+  * Thunderbird replaces Evolution: the dock and the default mail handlers
+    point to Thunderbird. evolution-data-server stays for GNOME Calendar and
+    Contacts. (The pin of the "gnome" metapackage is part of the image
+    configuration, not of this package.)

@@ -1,0 +1,4 @@
+# Image de profil par défaut de la distribution : /etc/skel/.face de desktop-base
+# (spirale Debian) est détourné (dpkg-divert) et remplacé, comme desktop-base
+# lui-même le fournit. Les utilisateurs gardent le choix de leur photo.
+tolome-base: package-contains-file-in-etc-skel [etc/skel/.face]

@@ -1,0 +1,22 @@
+#!/bin/sh
+set -e
+
+SUPP=/usr/share/i18n/SUPPORTED
+
+case "$1" in
+    remove|abort-install)
+        # Rend SUPPORTED au paquet « locales » (version à jour comprise).
+        if dpkg-divert --list tolome-locales 2>/dev/null | grep -q "$SUPP"; then
+            rm -f "$SUPP" "$SUPP.new"
+            dpkg-divert --package tolome-locales --remove --rename "$SUPP"
+        fi
+        ;;
+    purge)
+        # Restes éventuels d'une compilation interrompue.
+        rm -rf /usr/lib/locale/.tolome-build.* 2>/dev/null || true
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0

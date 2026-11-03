@@ -1,0 +1,12 @@
+#!/bin/sh
+# dada — « Sa Majesté » en fon : exécute une commande avec les droits
+# d'administration, grâce à sudo-rs.
+#
+#   dada nala install vim
+#   dada -i                (shell d'administration)
+#   dada -u alice ls ~alice
+#
+# Toutes les options sont celles de sudo-rs (voir sudo-rs(8) et dada(8)).
+# Ce script ne change rien à la politique de sécurité : celle-ci reste dans
+# /etc/sudoers et /etc/sudoers.d. La commande « sudo » d'origine reste installée.
+exec /usr/bin/sudo-rs "$@"

@@ -1,0 +1,33 @@
+Source: tolome-calamares-settings
+Section: admin
+Priority: optional
+Maintainer: Anhky <dev@tolome.net>
+Build-Depends: debhelper-compat (= 13), librsvg2-bin
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+
+Package: tolome-calamares-settings
+Architecture: all
+Depends: calamares,
+ rsync,
+ cryptsetup,
+ libglib2.0-bin,
+ keyutils,
+ pkexec,
+ sudo,
+ qml-module-qtquick-window2,
+ qml-module-qtquick2,
+ dconf-gsettings-backend | gsettings-backend,
+ ${misc:Depends}
+Recommends: tolome-artwork, tolome-keyboard-fon, x11-xserver-utils
+Provides: calamares-settings
+Conflicts: calamares-settings-debian
+Replaces: calamares-settings-debian
+Description: Tolome theme and settings for the Calamares installer
+ Tɔlɔmɛ branding of the Calamares installer (title, logo, slideshow,
+ colours) and its settings for live media built on Debian.
+ .
+ It replaces calamares-settings-debian: the configuration files, modules
+ and helper scripts of that package are reused (GPL) and adapted. After the
+ keyboard step, the installed system gets the layout chosen in Calamares
+ first and "fon" second.

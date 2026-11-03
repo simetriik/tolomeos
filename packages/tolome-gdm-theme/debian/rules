@@ -1,0 +1,13 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+# Fond de l'écran de connexion : Ganvié assombri et flouté.
+override_dh_auto_build:
+	mkdir -p build
+	rsvg-convert -w 1920 -h 1080 artwork/tolome-fond-ganvie.svg -o build/ganvie.png
+	python3 -I scripts/make-background.py build/ganvie.png build/gdm-background.png
+
+override_dh_auto_clean:
+	rm -rf build

@@ -1,0 +1,36 @@
+tolome-artwork (0.4.0) UNRELEASED; urgency=medium
+
+  * GRUB of the installed system while "Loading Linux": GRUB_BACKGROUND is now
+    a flat indigo (#23325E) image without logo, so the console background is
+    indigo and no second, offset logo appears. The theme logo is fixed-size and
+    moved to the top of the screen, out of the console area, and the theme gets
+    a flat desktop-image (avoids the UEFI "null src bitmap" error).
+
+ -- Anhky <dev@tolome.net>  Tue, 03 Nov 2026 21:00:00 +0100
+
+tolome-artwork (0.3.0) UNRELEASED; urgency=medium
+
+  * Add the provisional login sound (sounds/accueil.wav, CC-BY-SA-4.0) played
+    once at each GNOME login with pw-play, at stream volume 0.7. Not played in
+    the live session, nor when GNOME event sounds are disabled. It can be
+    disabled from GNOME Tweaks (startup applications) or with a hidden
+    autostart override. The sound is replaced by changing a single file.
+  * Install sounds/son-accueil.py as an example, add tests/test-login-sound.sh.
+
+ -- Anhky <dev@tolome.net>  Tue, 03 Nov 2026 18:00:00 +0100
+
+tolome-artwork (0.2.0) UNRELEASED; urgency=medium
+
+  * Set GRUB_BACKGROUND (indigo, logo) so that the desktop-base background
+    no longer appears while the kernel loads.
+
+ -- Anhky <dev@tolome.net>  Tue, 03 Nov 2026 14:30:00 +0100
+
+tolome-artwork (0.1.0) UNRELEASED; urgency=medium
+
+  * Initial packaging: 8 wallpapers, hicolor icon, GSettings override
+    (Ganvié default, lock screen), Plymouth and GRUB themes.
+  * Licences: CC-BY-SA-4.0 (Simetriik Solutions), OFL-1.1 for the name
+    outlines; trademark notice in MARQUE.
+
+ -- Anhky <dev@tolome.net>  Tue, 03 Nov 2026 11:00:00 +0100

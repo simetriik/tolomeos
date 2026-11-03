@@ -1,0 +1,127 @@
+comment_char %
+escape_char /
+
+% Français du Bénin (fr_BJ) pour Tɔlɔmɛ.
+%
+% Dérivée de fr_FR (glibc) : seules les catégories propres au Bénin sont
+% redéfinies (identification, monétaire, adresse, téléphone) ; le reste est
+% copié. Voir /usr/share/doc/tolome-locales/README.Debian pour les choix et
+% pour les écarts avec le CLDR.
+
+LC_IDENTIFICATION
+title      "French locale for Benin"
+source     "Tɔlɔmɛ"
+address    ""
+contact    "Simetriik Solutions"
+email      "dev@tolome.net"
+tel        ""
+fax        ""
+language   "French"
+territory  "Benin"
+revision   "1.0"
+date       "2026-11-03"
+
+category "i18n:2012";LC_IDENTIFICATION
+category "i18n:2012";LC_CTYPE
+category "i18n:2012";LC_COLLATE
+category "i18n:2012";LC_TIME
+category "i18n:2012";LC_NUMERIC
+category "i18n:2012";LC_MONETARY
+category "i18n:2012";LC_MESSAGES
+category "i18n:2012";LC_PAPER
+category "i18n:2012";LC_NAME
+category "i18n:2012";LC_ADDRESS
+category "i18n:2012";LC_TELEPHONE
+category "i18n:2012";LC_MEASUREMENT
+END LC_IDENTIFICATION
+
+LC_CTYPE
+copy "fr_FR"
+END LC_CTYPE
+
+LC_COLLATE
+copy "fr_FR"
+END LC_COLLATE
+
+LC_MESSAGES
+copy "fr_FR"
+END LC_MESSAGES
+
+% Franc CFA (XOF), sans décimales, symbole après le montant : 25 000 F CFA.
+% Espaces comme le CLDR : U+202F (fine insécable) dans les milliers et dans
+% « F CFA », U+00A0 (insécable) avant le symbole. glibc ne sait insérer qu'une
+% espace ordinaire (p_sep_by_space) : l'espace insécable est donc placée au
+% début du symbole, avec p_sep_by_space 0. Le format international (%i) garde
+% son séparateur (int_*_sep_by_space 1).
+LC_MONETARY
+int_curr_symbol           "XOF "
+currency_symbol           "<U00A0>F<U202F>CFA"
+mon_decimal_point         ","
+mon_thousands_sep         "<U202F>"
+mon_grouping              3
+positive_sign             ""
+negative_sign             "-"
+int_frac_digits           0
+frac_digits               0
+p_cs_precedes             0
+p_sep_by_space            0
+n_cs_precedes             0
+n_sep_by_space            0
+p_sign_posn               1
+n_sign_posn               1
+int_p_cs_precedes         0
+int_p_sep_by_space        1
+int_n_cs_precedes         0
+int_n_sep_by_space        1
+int_p_sign_posn           1
+int_n_sign_posn           1
+END LC_MONETARY
+
+% Virgule décimale, espace fine insécable pour les milliers (comme fr_FR).
+LC_NUMERIC
+copy "fr_FR"
+END LC_NUMERIC
+
+% Formats français, semaine commençant le lundi. Semaine ISO à 4 jours
+% minimum (copie de fr_FR) : le CLDR indique 1 jour pour le Bénin.
+LC_TIME
+copy "fr_FR"
+END LC_TIME
+
+LC_PAPER
+copy "i18n"
+END LC_PAPER
+
+LC_NAME
+copy "fr_FR"
+END LC_NAME
+
+% Pas de code postal généralisé au Bénin : %z est retiré du format postal.
+% country_car : code automobile international du Bénin (DY, ex-Dahomey).
+LC_ADDRESS
+postal_fmt    "%f%N%a%N%d%N%b%N%s %h %e %r%N%T%N%c%N"
+country_name  "Bénin"
+country_ab2   "BJ"
+country_ab3   "BEN"
+country_num   204
+country_car   "DY"
+country_post  "BJ"
+lang_name     "français"
+lang_ab       "fr"
+lang_term     "fra"
+lang_lib      "fre"
+END LC_ADDRESS
+
+% Depuis le 30 novembre 2024, les numéros béninois ont 10 chiffres et
+% commencent par 01. Ce 01 fait partie du numéro et reste à l'international
+% (+229 01 ...) : ce n'est pas un indicatif de zone à retirer (pas de %a).
+LC_TELEPHONE
+tel_int_fmt    "+%c %l"
+tel_dom_fmt    "%l"
+int_prefix     "229"
+int_select     "00"
+END LC_TELEPHONE
+
+LC_MEASUREMENT
+copy "i18n"
+END LC_MEASUREMENT

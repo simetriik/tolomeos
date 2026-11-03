@@ -1,0 +1,4 @@
+#!/bin/sh
+# Nettoyage de l'arbre de construction.
+set -e
+lb clean noauto "${@}"

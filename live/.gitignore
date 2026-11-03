@@ -1,0 +1,15 @@
+chroot/
+binary/
+cache/
+.build/
+*.iso
+*.log
+*.hybrid.iso.*
+live-image-*
+chroot.files
+chroot.packages.*
+binary.modified_timestamps
+tolome-amd64.contents
+tolome-amd64.files
+tolome-amd64.packages
+local/

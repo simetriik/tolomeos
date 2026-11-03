@@ -1,0 +1,35 @@
+#!/usr/bin/make -f
+
+LOGOS = artwork/logos
+SIZES = 16 32 48 64 128 256
+
+%:
+	dh $@
+
+# Exporte les logos en PNG (Plymouth et GRUB ne lisent pas le SVG).
+override_dh_auto_build:
+	mkdir -p build/plymouth build/grub
+	# Aplat indigo : fond de la console GRUB (GRUB_BACKGROUND) et desktop-image du thème
+	rsvg-convert -w 640 -h 480 data/grub/flat.svg -o build/grub-background.png
+	cp build/grub-background.png build/grub/background.png
+	rsvg-convert -w 480 $(LOGOS)/logo-horizontal-inverse.svg -o build/plymouth/logo.png
+	rsvg-convert -w 320 $(LOGOS)/logo-horizontal-inverse.svg -o build/grub/logo.png
+
+override_dh_auto_clean:
+	rm -rf build
+
+override_dh_install:
+	dh_install
+	# Icône hicolor : icone-16.svg pour 16 px, icone.svg pour les autres
+	for s in $(SIZES); do \
+	  d=debian/tolome-artwork/usr/share/icons/hicolor/$${s}x$${s}/apps; \
+	  install -d $$d; \
+	  if [ $$s = 16 ]; then src=$(LOGOS)/icone-16.svg; else src=$(LOGOS)/icone.svg; fi; \
+	  install -m 644 $$src $$d/tolome.svg; \
+	done
+	install -D -m 644 $(LOGOS)/icone.svg \
+	  debian/tolome-artwork/usr/share/icons/hicolor/scalable/apps/tolome.svg
+
+# Priorité 20 : après 10_desktop-base, donc notre fond l'emporte.
+override_dh_installgsettings:
+	dh_installgsettings --priority=20

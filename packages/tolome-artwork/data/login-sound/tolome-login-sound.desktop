@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=Son d'ouverture de session Tɔlɔmɛ
+Name[en]=Tolome login sound
+Comment=Joue un court son à l'ouverture de session
+Comment[en]=Plays a short sound when you log in
+Exec=/usr/lib/tolome/tolome-login-sound
+Icon=tolome
+OnlyShowIn=GNOME;
+NoDisplay=false
+Terminal=false
+X-GNOME-Autostart-Phase=Applications
+X-GNOME-AutoRestart=false

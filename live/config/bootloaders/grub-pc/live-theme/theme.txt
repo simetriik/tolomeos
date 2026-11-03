@@ -1,0 +1,63 @@
+# Menu de démarrage de l'ISO Tɔlɔmɛ : fond indigo #23325E, logo à proportions fixes.
+# Aplat indigo : le desktop-image est indispensable, sans lui GRUB affiche en UEFI
+# « error: null src bitmap in grub_video_bitmap_create_scaled » après Entrée.
+desktop-image: "../splash.png"
+desktop-color: "#23325E"
+title-color: "#F4EDE1"
+title-font: "Unifont Regular 16"
+title-text: ""
+message-font: "Unifont Regular 16"
+terminal-font: "Unifont Regular 16"
+
+# Logo à proportions fixes (pas d'étirement). Placé tout en haut : la console
+# (messages de chargement du noyau) couvre la zone 17 %-82 % de l'écran.
++ image {
+        file = "logo.png"
+        left = 50%-160
+        top = 2%
+}
+
+#help bar at the bottom
++ label {
+        top = 100%-50
+        left = 0
+        width = 100%
+        height = 20
+        text = "@KEYMAP_SHORT@"
+        align = "center"
+        color = "#F4EDE1"
+        font = "Unifont Regular 16"
+}
+
+#boot menu
++ boot_menu {
+        left = 10%
+        width = 80%
+        top = 40%
+        height = 48%-80
+        item_color = "#C9D0E4"
+        item_font = "Unifont Regular 16"
+        selected_item_color = "#E0A646"
+        selected_item_font = "Unifont Regular 16"
+        item_height = 20
+        item_padding = 2
+        item_spacing = 4
+        icon_width = 0
+        icon_heigh = 0
+        item_icon_space = 0
+}
+
+#progress bar
++ progress_bar {
+        id = "__timeout__"
+        left = 15%
+        top = 100%-80
+        height = 16
+        width = 70%
+        font = "Unifont Regular 16"
+        text_color = "#23325E"
+        fg_color = "#C98A2B"
+        bg_color = "#4A5A8C"
+        border_color = "#F4EDE1"
+        text = "@TIMEOUT_NOTIFICATION_LONG@"
+}
