@@ -1,0 +1,10 @@
+[Unit]
+Description=Give the Tolome default picture to new user accounts
+
+[Path]
+# useradd, adduser, Calamares et AccountsService modifient /etc/passwd en créant un compte.
+PathChanged=/etc/passwd
+Unit=tolome-avatar.service
+
+[Install]
+WantedBy=multi-user.target

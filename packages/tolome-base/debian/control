@@ -20,7 +20,9 @@ Description: Base identity of the Tolome system
   * GRUB uses the distributor name "Tolome" (menu entry and EFI directory);
   * the default user picture (/etc/skel/.face, the Debian swirl of desktop-base)
     is diverted and replaced by the Tɔlɔmɛ baobab; users can still pick their
-    own photo in Settings;
+    own photo in Settings. The baobab is also set as the AccountsService icon
+    of ordinary accounts (what the GDM login screen displays), at boot and
+    whenever an account is created, without overwriting a chosen picture;
   * the GNOME welcome tour is disabled;
   * Thunderbird replaces Evolution: the dock and the default mail handlers
     point to Thunderbird. evolution-data-server stays for GNOME Calendar and

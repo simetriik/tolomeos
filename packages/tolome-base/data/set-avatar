@@ -1,0 +1,113 @@
+#!/bin/sh
+# Donne le baobab de Tɔlɔmɛ comme icône AccountsService (/var/lib/AccountsService/icons/<compte>)
+# aux comptes ordinaires qui n'ont pas choisi d'image. GDM lit cette icône, pas ~/.face.
+#
+# Usage : set-avatar --all              tous les comptes ordinaires (UID_MIN à UID_MAX)
+#         set-avatar --user NOM...      seulement ces comptes
+#         set-avatar --revert           retire les icônes posées par ce script (désinstallation)
+#
+# Une image choisie par l'utilisateur n'est jamais écrasée :
+#   * clé « Icon= » déjà présente dans /var/lib/AccountsService/users/<compte> (choix dans
+#     Paramètres) : on n'y touche pas, sauf si elle désigne le ~/.face par défaut, copie
+#     exacte du baobab (illisible par GDM, qui n'a pas accès au dossier personnel) ;
+#   * aucune clé mais un fichier icons/<compte> déjà là : on n'y touche pas ;
+#   * aucune clé mais un ~/.face différent du baobab (image personnelle) : on n'y touche pas.
+#
+# Variables d'environnement (tests uniquement) :
+#   TOLOME_FACE (défaut /usr/share/tolome/face.png)   TOLOME_AS_DIR (défaut /var/lib/AccountsService)
+#   TOLOME_PASSWD (fichier au format passwd, sinon getent passwd)   TOLOME_LOGIN_DEFS   TOLOME_NO_RESTART
+set -u
+
+FACE="${TOLOME_FACE:-/usr/share/tolome/face.png}"
+ASDIR="${TOLOME_AS_DIR:-/var/lib/AccountsService}"
+LOGIN_DEFS="${TOLOME_LOGIN_DEFS:-/etc/login.defs}"
+TAG="tolome-avatar"
+CHG=$(mktemp) || exit 0          # non vide si au moins une icône a changé (les boucles tournent en sous-shell)
+trap 'rm -f "$CHG"' EXIT
+
+log() { echo "$TAG: $*" >&2; logger -t "$TAG" -- "$*" 2>/dev/null || true; }
+
+passwd_db() { if [ -n "${TOLOME_PASSWD:-}" ]; then cat "$TOLOME_PASSWD"; else getent passwd; fi; }
+
+# « nom:dossier » des comptes ordinaires qui peuvent ouvrir une session
+comptes() {
+    umin=$(awk '$1 == "UID_MIN" { print $2 }' "$LOGIN_DEFS" 2>/dev/null); umax=$(awk '$1 == "UID_MAX" { print $2 }' "$LOGIN_DEFS" 2>/dev/null)
+    passwd_db | awk -F: -v min="${umin:-1000}" -v max="${umax:-60000}" \
+        '$3 >= min && $3 <= max && $7 !~ /(nologin|false)$/ { print $1 ":" $6 }'
+}
+
+nom_valide() { case "$1" in ''|[!a-z_]*|*[!a-z0-9_.-]*) return 1 ;; esac; return 0; }
+
+cle_icone() { [ -f "$1" ] && sed -n 's/^Icon=//p' "$1" | head -n 1; }
+
+# Écrit la clé Icon dans le fichier du compte (créé en 0600 si besoin), de façon atomique.
+poser_cle() { # $1 = fichier, $2 = chemin de l'icône
+    f=$1; tmp=$(mktemp "$ASDIR/users/.tolome.XXXXXX") || return 1
+    if [ -f "$f" ]; then
+        if grep -q '^Icon=' "$f"; then sed "s|^Icon=.*|Icon=$2|" "$f" > "$tmp"
+        elif grep -q '^\[User\]' "$f"; then sed "/^\[User\]/a Icon=$2" "$f" > "$tmp"
+        else { cat "$f"; printf '\n[User]\nIcon=%s\n' "$2"; } > "$tmp"; fi
+    else
+        printf '[User]\nIcon=%s\n' "$2" > "$tmp"
+    fi
+    chmod 600 "$tmp" && mv -f "$tmp" "$f" || { rm -f "$tmp"; return 1; }
+}
+
+appliquer() { # $1 = compte, $2 = dossier personnel
+    nom=$1; home=$2
+    nom_valide "$nom" || { log "nom de compte ignoré : $nom"; return 0; }
+    ufile="$ASDIR/users/$nom"; icone="$ASDIR/icons/$nom"
+    courant=$(cle_icone "$ufile")
+    if [ -n "$courant" ]; then
+        [ "$courant" = "$icone" ] && return 0                       # déjà en place (ou choix de l'utilisateur)
+        if [ "$(basename "$courant")" = ".face" ] && [ -f "$courant" ] && cmp -s "$courant" "$FACE"; then
+            :                                                       # ~/.face par défaut, illisible par GDM
+        else
+            return 0                                                # image choisie : intacte
+        fi
+    else
+        [ -e "$icone" ] && return 0
+        if [ -f "$home/.face" ] && ! cmp -s "$home/.face" "$FACE"; then return 0; fi
+    fi
+    [ -d "$ASDIR/icons" ] || install -d -m 755 "$ASDIR/icons" || return 1
+    [ -d "$ASDIR/users" ] || install -d -m 700 "$ASDIR/users" || return 1
+    tmp=$(mktemp "$ASDIR/icons/.tolome.XXXXXX") || return 1
+    cp "$FACE" "$tmp" && chmod 644 "$tmp" && mv -f "$tmp" "$icone" || { rm -f "$tmp"; log "copie de l'icône impossible pour $nom"; return 1; }
+    poser_cle "$ufile" "$icone" || { rm -f "$icone"; log "écriture de $ufile impossible"; return 1; }
+    log "icône par défaut posée pour $nom"
+    echo 1 >> "$CHG"
+}
+
+revenir() {
+    [ -d "$ASDIR/icons" ] || return 0
+    for icone in "$ASDIR"/icons/*; do
+        [ -f "$icone" ] || continue
+        nom=$(basename "$icone"); ufile="$ASDIR/users/$nom"
+        cmp -s "$icone" "$FACE" || continue                          # image de l'utilisateur : intacte
+        [ "$(cle_icone "$ufile")" = "$icone" ] || continue
+        tmp=$(mktemp "$ASDIR/users/.tolome.XXXXXX") || continue
+        grep -v '^Icon=' "$ufile" > "$tmp"
+        if [ "$(grep -v -e '^\[User\]$' -e '^[[:space:]]*$' "$tmp" | wc -l)" -eq 0 ]; then rm -f "$tmp" "$ufile"
+        else chmod 600 "$tmp"; mv -f "$tmp" "$ufile"; fi
+        rm -f "$icone"; log "icône par défaut retirée pour $nom"; echo 1 >> "$CHG"
+    done
+}
+
+[ "${1:-}" = "--revert" ] || [ -f "$FACE" ] || { log "image par défaut introuvable ($FACE)"; exit 0; }
+
+case "${1:-}" in
+    --all)    comptes | while IFS=: read -r n h; do appliquer "$n" "$h"; done ;;
+    --user)   shift
+              for n in "$@"; do
+                  h=$(comptes | awk -F: -v n="$n" '$1 == n { print $2 }')
+                  [ -n "$h" ] && appliquer "$n" "$h"
+              done ;;
+    --revert) revenir ;;
+    *) echo "usage : $0 --all | --user NOM... | --revert" >&2; exit 2 ;;
+esac
+
+# Si une icône a changé et que le démon tourne, il relit ses fichiers (pas au démarrage : il n'est pas encore lancé).
+if [ -s "$CHG" ] && [ -z "${TOLOME_NO_RESTART:-}" ] && [ -d /run/systemd/system ] && systemctl is-active --quiet accounts-daemon.service 2>/dev/null; then
+    systemctl try-restart --no-block accounts-daemon.service 2>/dev/null || true
+fi
+exit 0

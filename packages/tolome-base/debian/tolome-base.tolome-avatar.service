@@ -1,0 +1,14 @@
+[Unit]
+Description=Tolome default user pictures for the login screen (AccountsService)
+Documentation=file:///usr/share/doc/tolome-base/README.Debian
+# Avant le démon et l'écran de connexion, pour que le baobab soit là dès le premier affichage.
+After=local-fs.target
+Before=accounts-daemon.service display-manager.service
+ConditionPathExists=/usr/share/tolome/face.png
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/tolome/set-avatar --all
+
+[Install]
+WantedBy=multi-user.target

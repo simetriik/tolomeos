@@ -36,3 +36,7 @@ override_dh_install:
 
 override_dh_installgsettings:
 	dh_installgsettings --priority=20
+
+# Unités tolome-avatar.service / tolome-avatar.path : activées, et démarrées à l'installation.
+override_dh_installsystemd:
+	dh_installsystemd --name=tolome-avatar tolome-avatar.path tolome-avatar.service

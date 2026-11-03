@@ -1,3 +1,21 @@
+tolome-base (0.4.0) UNRELEASED; urgency=medium
+
+  * Login screen avatar: GDM reads /var/lib/AccountsService/icons/<user>, not
+    ~/.face, so it showed the generic icon. New /usr/lib/tolome/set-avatar
+    gives the Tɔlɔmɛ baobab (/usr/share/tolome/face.png) to ordinary accounts
+    as their AccountsService icon. A picture chosen by the user is never
+    overwritten: an existing Icon= key (except the default ~/.face, which GDM
+    cannot read), an existing icons/<user> file or a personal ~/.face are left
+    alone.
+  * tolome-avatar.service runs it at boot, before accounts-daemon and the
+    display manager (accounts created by Calamares get the baobab at the first
+    login screen); tolome-avatar.path runs it whenever /etc/passwd changes
+    (adduser, useradd, Settings).
+  * prerm: remove the icons installed by the package (user pictures kept).
+  * Tests: tests/test-set-avatar.sh (including the .path chain with systemd).
+
+ -- Anhky <dev@tolome.net>  Wed, 04 Nov 2026 10:30:00 +0100
+
 tolome-base (0.3.1) UNRELEASED; urgency=medium
 
   * postrm: do not lift the diversions on abort-upgrade (the old version is

@@ -2,6 +2,11 @@
 set -e
 
 if [ "$1" = "remove" ] || [ "$1" = "deconfigure" ]; then
+    # Retire les icônes AccountsService posées par le paquet (celles choisies par les
+    # utilisateurs ne sont pas touchées).
+    if [ -x /usr/lib/tolome/set-avatar ]; then
+        /usr/lib/tolome/set-avatar --revert || true
+    fi
     update-alternatives --remove vendor-logos /usr/share/tolome/vendor-logos
 fi
 
