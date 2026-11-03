@@ -1,3 +1,17 @@
+tolome-gdm-theme (0.2.0) UNRELEASED; urgency=medium
+
+  * Login screen: the user card (.login-dialog-user-list-item) is now
+    translucent instead of an opaque grey rectangle with a blue outline:
+    rgba(255,255,255,0.08) at rest with the rounded corners kept and no
+    border, 0.14 on hover, 0.16 with a thin rgba(255,255,255,0.35) outline on
+    focus or selection. The rules are appended to the dark and light
+    stylesheets with the selectors of GNOME Shell 48 (last rule wins, also over
+    the "!important" focus shadow); the high-contrast stylesheet is left
+    untouched. Applied in modes image and flat, not in mode off.
+  * Tests cover the card in every mode and check the CSS syntax with GTK 4.
+
+ -- Anhky <dev@tolome.net>  Wed, 04 Nov 2026 10:00:00 +0100
+
 tolome-gdm-theme (0.1.1) UNRELEASED; urgency=medium
 
   * postrm: do not lift the diversion on abort-upgrade (the old version is

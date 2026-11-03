@@ -16,5 +16,8 @@ Description: Tolome background for the GDM login screen
  with dpkg-divert and regenerated from the original by a trigger, so the
  background survives GNOME updates.
  .
+ The user cards of the login screen are made translucent so that they blend
+ with the background (not in mode off).
+ .
  The mode is set in /etc/tolome/gdm-background.conf (image, flat or off).
  Removing the package restores the original theme.

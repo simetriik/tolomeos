@@ -96,6 +96,37 @@ if [ "$n" -eq 0 ]; then
     restore; exit 0
 fi
 
+# 2b. Carte de l'utilisateur (liste de connexion) : fond translucide, sans liseré bleu.
+# Même sélecteurs que gnome-shell, ajoutés en fin de feuille : à spécificité égale,
+# la dernière règle l'emporte (y compris contre le « box-shadow … !important » du focus).
+# Feuilles claire et sombre seulement : le contraste élevé reste celui de GNOME.
+CARTE='.login-dialog-user-list-view .login-dialog-user-list .login-dialog-user-list-item'
+{
+    echo
+    echo "/* tolome-user-card : carte d'utilisateur translucide (tolome-gdm-theme) */"
+    echo "$CARTE {"
+    echo "  background-color: rgba(255, 255, 255, 0.08);"
+    echo "  border-radius: 16px;"
+    echo "  box-shadow: none; }"
+    echo "$CARTE:hover {"
+    echo "  background-color: rgba(255, 255, 255, 0.14); }"
+    echo "$CARTE:active, $CARTE:active:hover {"
+    echo "  background-color: rgba(255, 255, 255, 0.16); }"
+    echo "$CARTE:selected, $CARTE:focus, $CARTE:active:focus {"
+    echo "  background-color: rgba(255, 255, 255, 0.16);"
+    echo "  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35) !important; }"
+    echo "$CARTE:selected:hover, $CARTE:focus:hover {"
+    echo "  background-color: rgba(255, 255, 255, 0.16); }"
+} > "$W/carte.css"
+cartes=0
+for css in "$W/src/gnome-shell-dark.css" "$W/src/gnome-shell-light.css"; do
+    if [ -f "$css" ] && grep -qF "$CARTE {" "$css"; then
+        cat "$W/carte.css" >> "$css"
+        cartes=$((cartes + 1))
+    fi
+done
+[ "$cartes" -gt 0 ] || log "carte d'utilisateur introuvable (version de GNOME Shell inattendue) : carte d'origine conservée"
+
 # 3. Compilation
 {
     echo '<?xml version="1.0" encoding="UTF-8"?>'
@@ -113,7 +144,8 @@ fi
 gresource list "$W/nouveau.gresource" > "$W/liste2.txt" 2>/dev/null
 attendu=$(wc -l < "$W/liste.txt"); [ "$MODE" = "image" ] && attendu=$((attendu + 1))
 obtenu=$(wc -l < "$W/liste2.txt")
-if [ "$obtenu" -ne "$attendu" ] || ! gresource extract "$W/nouveau.gresource" "$PREFIX/gnome-shell-dark.css" | grep -q "$INDIGO"; then
+if [ "$obtenu" -ne "$attendu" ] || ! gresource extract "$W/nouveau.gresource" "$PREFIX/gnome-shell-dark.css" | grep -q "$INDIGO" \
+   || { [ "$cartes" -gt 0 ] && ! gresource extract "$W/nouveau.gresource" "$PREFIX/gnome-shell-dark.css" | grep -q 'tolome-user-card'; }; then
     log "contrôle du thème produit échoué ($obtenu ressources, $attendu attendues) : thème d'origine conservé"
     restore; exit 0
 fi
@@ -121,7 +153,7 @@ fi
 # 5. Installation atomique
 chmod 644 "$W/nouveau.gresource"
 if cp -f "$W/nouveau.gresource" "$DEST.new" && mv -f "$DEST.new" "$DEST"; then
-    log "thème de l'écran de connexion appliqué (mode $MODE, $n feuilles de style)"
+    log "thème de l'écran de connexion appliqué (mode $MODE, $n feuilles de style, $cartes carte(s) d'utilisateur)"
 else
     log "installation impossible"; restore
 fi
