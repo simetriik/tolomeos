@@ -1,3 +1,17 @@
+tolome-locales (0.2.0) UNRELEASED; urgency=medium
+
+  * New locale fon_BJ (Fon, Benin) from the Tolome glossary (LC01-LC26):
+    day and month names (Monday first), abbreviations, am_pm zanzan /
+    xwelɛkɔ with 24-hour display by default, yes/no words (ɛɛn, eo; whole
+    words or y/n, no single-letter shortcut), language name Fɔngbè, country
+    name Benɛn, and the 31-letter Fon alphabet for collation (gb, kp and ny
+    are letters: a b c d ɖ e ɛ f g gb h i j k l m n o ɔ p kp r s t u v w x y
+    ny z). Money, numbers and telephone come from fr_BJ.
+  * One more line in i18n/SUPPORTED (fon_BJ.UTF-8 UTF-8); tests/test-fon_BJ.sh
+    added; maintainer-script tests now cover both locales.
+
+ -- Anhky <dev@tolome.net>  Wed, 04 Nov 2026 09:00:00 +0100
+
 tolome-locales (0.1.0) UNRELEASED; urgency=medium
 
   * Initial packaging: locale fr_BJ (French, Benin), compiled with

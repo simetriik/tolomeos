@@ -1,6 +1,9 @@
 # Quand le paquet « locales » met à jour SUPPORTED (déplacé en .distrib par le
-# détournement), les sources fr_FR (copiées par fr_BJ) ou les charmaps, on
+# détournement), les sources fr_FR (copiées par fr_BJ), les règles de tri iso14651_t1 (copiées par
+# fon_BJ) ou les charmaps, on
 # régénère SUPPORTED et on recompile les locales de Tɔlɔmɛ.
 interest-noawait /usr/share/i18n/SUPPORTED.distrib
 interest-noawait /usr/share/i18n/locales/fr_FR
 interest-noawait /usr/share/i18n/charmaps/UTF-8.gz
+interest-noawait /usr/share/i18n/locales/iso14651_t1
+interest-noawait /usr/share/i18n/locales/iso14651_t1_common

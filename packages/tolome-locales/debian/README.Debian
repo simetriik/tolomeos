@@ -1,13 +1,13 @@
 tolome-locales pour Debian
 ==========================
 
-Ce paquet ajoute à Tɔlɔmɛ des locales que la glibc ne fournit pas. Pour l'instant :
-fr_BJ (français, Bénin). Il sert de modèle pour fon_BJ.
+Ce paquet ajoute à Tɔlɔmɛ des locales que la glibc ne fournit pas : fr_BJ (français,
+Bénin) et fon_BJ (fon, Bénin).
 
 Ce que fait le paquet
 ---------------------
 * Les définitions sont dans /usr/share/tolome/i18n/locales/ ; la liste des locales à
-  compiler est /usr/share/tolome/i18n/SUPPORTED (une ligne « fr_BJ.UTF-8 UTF-8 »).
+  compiler est /usr/share/tolome/i18n/SUPPORTED (une ligne par locale : « fr_BJ.UTF-8 UTF-8 », « fon_BJ.UTF-8 UTF-8 »).
 * /usr/lib/tolome/locales-update compile chaque locale avec « localedef --no-archive »
   dans /usr/lib/locale/<nom>.<codage>/ (par exemple fr_BJ.utf8). Aucun fichier de la
   glibc ni du paquet « locales » n'est modifié ; locale-archive n'est pas touchée et
@@ -59,17 +59,37 @@ MEASUREMENT viennent de « i18n »). Redéfinies :
    de %a dans les formats.
 5. Adresse : pas de %z (le Bénin n'a pas de code postal général). Pas de country_isbn.
 
-Ajouter fon_BJ (ou une autre locale)
-------------------------------------
-1. Écrire /usr/share/tolome/i18n/locales/fon_BJ (dans les sources du paquet : i18n/locales/),
-   sur le modèle de fr_BJ : LC_IDENTIFICATION avec « language "Fon" », lang_name,
-   lang_ab, lang_term "fon" ; noms des jours et des mois dans LC_TIME ; LC_MONETARY,
-   LC_TELEPHONE et LC_ADDRESS repris de fr_BJ ; ne copier que ce qui existe en fon.
-2. Ajouter la ligne « fon_BJ.UTF-8 UTF-8 » à i18n/SUPPORTED.
-3. Ajouter un test à tests/ (modèle : tests/test-fr_BJ.sh) et reconstruire le paquet.
+fon_BJ : contenu
+----------------
+Données du glossaire Tɔlɔmɛ (lignes LC01 à LC26, orthographe validée). Reprises de
+fr_BJ : LC_NUMERIC, LC_MONETARY, LC_TELEPHONE (franc CFA, +229) ; de fr_FR : LC_CTYPE et
+LC_NAME ; PAPER et MEASUREMENT : « i18n ».
+* LC_IDENTIFICATION : langue « Fon », Bénin. LC_ADDRESS : lang_name « Fɔngbè »,
+  lang_term « fon » (pas de code ISO 639-1, donc pas de lang_ab), country_name « Benɛn ».
+* LC_TIME : jours (Tɛnigbe = lundi, premier jour de la semaine ; Vodungbe = dimanche),
+  mois (Aluunsun…Woosun) et abréviations. Formats « %d/%m/%Y » et 24 h (%T) par défaut ;
+  am_pm « zanzan » (avant midi) / « xwelɛkɔ » (après midi), utilisés si un programme
+  demande l'heure sur 12 h (%p, %r).
+* LC_MESSAGES : yesstr « ɛɛn », nostr « eo ». yesexpr accepte le mot entier ɛɛn ou y/Y
+  (et + ou 1) ; noexpr le mot entier eo ou n/N (et - ou 0). Pas de raccourci sur la
+  lettre seule ɛ ou e, pour éviter les confusions sans clavier fon : à revoir quand le
+  clavier fon sera répandu.
+* LC_COLLATE : alphabet à 31 lettres, dans cet ordre exact :
+  a b c d ɖ e ɛ f g gb h i j k l m n o ɔ p kp r s t u v w x y ny z
+  (gb, kp et ny sont des lettres à part entière ; pas de hw ni de xw).
+Limites : la locale ne traduit pas l'interface. GNOME (Paramètres) n'affiche une
+langue que si elle a des traductions : fon_BJ sert de locale de formats et de tri ;
+avec LANG=fon_BJ.UTF-8, les programmes sans traduction fon restent en anglais, d'où
+LANGUAGE=fon:fr pour retomber sur le français. Calamares la propose pour les formats.
+Le CLDR n'a pas de données pour le fon : aucune comparaison possible.
+
+Ajouter une autre locale
+------------------------
+1. Écrire i18n/locales/<nom> (sur le modèle de fr_BJ ou fon_BJ), puis ajouter la ligne
+   « <nom>.UTF-8 UTF-8 » à i18n/SUPPORTED.
+2. Ajouter un test à tests/ (modèle : tests/test-fon_BJ.sh) et reconstruire le paquet.
    Rien d'autre à modifier : scripts de maintenance, trigger et détournement sont
-   génériques. Une locale sans traduction d'interface reste une locale de formats ;
-   les applications retombent sur LANGUAGE (par exemple fon:fr).
+   génériques.
 
 Désinstallation
 ---------------

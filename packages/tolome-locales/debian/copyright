@@ -3,9 +3,12 @@ Upstream-Name: tolome-locales
 Upstream-Contact: Simetriik Solutions <dev@tolome.net>
 
 Files: i18n/locales/fr_BJ
+ i18n/locales/fon_BJ
 Copyright: 2026 Simetriik Solutions
 License: LGPL-2.1+
-Comment: Derived from the fr_FR locale of the GNU C Library (copy "fr_FR").
+Comment: fr_BJ is derived from the fr_FR locale of the GNU C Library (copy "fr_FR").
+ fon_BJ copies fr_FR and fr_BJ categories and follows the collation scheme of
+ the glibc locales (iso14651_t1, as in yo_NG).
 
 Files: *
 Copyright: 2026 Simetriik Solutions
