@@ -8,6 +8,7 @@ for dir in "$root"/packages/tolome-*/; do
     name=$(basename "$dir")
     echo "== $name"
     (cd "$dir" && dpkg-buildpackage -us -uc -b)
+    rm -f "$dest"/"$name"_*_all.deb      # remplace les versions précédentes (live-build installerait les deux)
     mv "$root"/packages/"$name"_*_all.deb "$dest"/
     rm -f "$root"/packages/"$name"_*.buildinfo "$root"/packages/"$name"_*.changes
 done
