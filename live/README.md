@@ -30,6 +30,8 @@ Configuration `live-build` de l'image ISO de **Tɔlɔmɛ** (Debian 13 trixie, am
 - **Locale `fr_BJ`** (français du Bénin, paquet `tolome-locales`) : franc CFA « 25 000 F CFA », virgule décimale, +229.
   Compilée dans `/usr/lib/locale/fr_BJ.utf8` ; `/usr/share/i18n/SUPPORTED` est détourné pour que Calamares la propose.
   La langue par défaut reste `fr_FR.UTF-8` (seuls les formats peuvent passer à `fr_BJ` pour le Bénin).
+- **Locale `fon_BJ`** (fon, paquet `tolome-locales` 0.2.0) : jours, mois, oui/non et tri de l'alphabet fon à 31 lettres ; locale de formats,
+  sans traduction d'interface. La garde `0210-check-packages` vérifie qu'elle est compilée et listée dans `SUPPORTED`.
 - Pas de traduction pour l'instant.
 
 ## Construction

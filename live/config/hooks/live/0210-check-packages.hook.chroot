@@ -7,8 +7,8 @@
 #  - Thunderbird en français, sudo-rs, sudo, nala et les paquets Tɔlɔmɛ présents ;
 #  - le thème de l'écran de connexion contient le fond, l'image de profil par défaut
 #    est celle de Tɔlɔmɛ, et la commande « dada » est unique ;
-#  - la locale fr_BJ est compilée et listée dans SUPPORTED (détourné), sans changer
-#    la langue par défaut (LANG reste fr_FR.UTF-8).
+#  - les locales fr_BJ et fon_BJ sont compilées et listées dans SUPPORTED (détourné), sans
+#    changer la langue par défaut (LANG reste fr_FR.UTF-8).
 set -e
 
 installe() {
@@ -51,8 +51,12 @@ locale -a | grep -qx 'fr_BJ.utf8' || erreur "la locale fr_BJ.utf8 n'est pas list
 grep -qx 'fr_BJ.UTF-8 UTF-8' /usr/share/i18n/SUPPORTED || erreur "SUPPORTED ne contient pas fr_BJ.UTF-8 (Calamares ne la proposerait pas)."
 [ -f /usr/share/i18n/SUPPORTED.distrib ] || erreur "SUPPORTED.distrib absent : détournement de SUPPORTED manquant."
 grep -qx 'fr_FR.UTF-8 UTF-8' /usr/share/i18n/SUPPORTED.distrib || erreur "SUPPORTED.distrib ne ressemble pas au fichier d'origine de locales."
-if [ -f /etc/default/locale ] && grep -q 'fr_BJ' /etc/default/locale; then
-    erreur "/etc/default/locale désigne fr_BJ : la langue par défaut ne doit pas changer."
+# Locale fon_BJ (tolome-locales >= 0.2.0) : même contrôles.
+locale -a | grep -qx 'fon_BJ.utf8' || erreur "la locale fon_BJ.utf8 n'est pas listée par « locale -a » (tolome-locales)."
+[ -f /usr/lib/locale/fon_BJ.utf8/.tolome-locales ] || erreur "/usr/lib/locale/fon_BJ.utf8 n'a pas été compilée par tolome-locales."
+grep -qx 'fon_BJ.UTF-8 UTF-8' /usr/share/i18n/SUPPORTED || erreur "SUPPORTED ne contient pas fon_BJ.UTF-8 (Calamares ne la proposerait pas)."
+if [ -f /etc/default/locale ] && grep -q -E 'fr_BJ|fon_BJ' /etc/default/locale; then
+    erreur "/etc/default/locale désigne fr_BJ ou fon_BJ : la langue par défaut ne doit pas changer."
 fi
 if [ -f /etc/default/locale ] && ! grep -q '^LANG=.*fr_FR.UTF-8' /etc/default/locale; then
     erreur "/etc/default/locale : LANG n'est pas fr_FR.UTF-8."
