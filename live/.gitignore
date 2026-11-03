@@ -13,3 +13,4 @@ tolome-amd64.contents
 tolome-amd64.files
 tolome-amd64.packages
 local/
+.lock

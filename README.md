@@ -45,6 +45,10 @@ Le glossaire n'est pas versionné dans ce dépôt.
 Plusieurs licences selon le contenu (GPL-2, CC-BY-SA-4.0, OFL-1.1, LGPL-2.1+) : voir [`LICENSE`](LICENSE) et `LICENSES/`.
 Le nom « Tɔlɔmɛ » et le logo baobab sont des marques de Simetriik Solutions : voir [`MARQUE`](MARQUE).
 
+## Contributeurs
+
+Voir [`CONTRIBUTEURS.md`](CONTRIBUTEURS.md).
+
 ## Contact
 
 dev@tolome.net

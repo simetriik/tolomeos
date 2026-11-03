@@ -9,6 +9,8 @@ License: LGPL-2.1+
 Comment: fr_BJ is derived from the fr_FR locale of the GNU C Library (copy "fr_FR").
  fon_BJ copies fr_FR and fr_BJ categories and follows the collation scheme of
  the glibc locales (iso14651_t1, as in yo_NG).
+ Fon linguistic data (fon_BJ): Hodonou Sounton, Modukpe S., Sedonu S.,
+ Ifeshola S.
 
 Files: *
 Copyright: 2026 Simetriik Solutions
