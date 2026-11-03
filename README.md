@@ -33,6 +33,13 @@ Ne pas construire dans `/tmp` (tmpfs trop petit). Les `.deb`, l'ISO et les journ
 Sans police, le nom reste un `<text>`. Avec la police variable `Montserrat[wght].ttf` (OFL-1.1, Google Fonts ; la version du paquet
 `fonts-montserrat` n'a pas la lettre « ɔ ») et `fonttools`, le nom est vectorisé : la sortie est identique aux fichiers versionnés.
 
+## Régénérer la locale fon_BJ
+
+    python3 tools/generate-fon_BJ.py <glossaire.csv>
+
+Le script régénère `packages/tolome-locales/i18n/locales/fon_BJ` depuis le glossaire Tɔlɔmɛ (colonne « Fon », lignes LC01 à LC26).
+Le glossaire n'est pas versionné dans ce dépôt.
+
 ## Licences et marque
 
 Plusieurs licences selon le contenu (GPL-2, CC-BY-SA-4.0, OFL-1.1, LGPL-2.1+) : voir [`LICENSE`](LICENSE) et `LICENSES/`.
