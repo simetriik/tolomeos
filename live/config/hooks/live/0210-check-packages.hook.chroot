@@ -7,6 +7,8 @@
 #  - Thunderbird en français, sudo-rs, sudo, nala et les paquets Tɔlɔmɛ présents ;
 #  - le thème de l'écran de connexion contient le fond, l'image de profil par défaut
 #    est celle de Tɔlɔmɛ, et la commande « dada » est unique ;
+#  - le thème de l'écran de connexion a la carte d'utilisateur translucide, et l'avatar par défaut
+#    est posé pour GDM (tolome-avatar : outil, image, unités .service et .path activées) ;
 #  - les locales fr_BJ et fon_BJ sont compilées et listées dans SUPPORTED (détourné), sans
 #    changer la langue par défaut (LANG reste fr_FR.UTF-8).
 set -e
@@ -31,6 +33,19 @@ if ! gresource list "$THEME" | grep -q tolome-gdm-background.png; then
     erreur "le thème de GNOME Shell ne contient pas le fond de l'écran de connexion (tolome-gdm-theme)."
 fi
 [ -f "$THEME.distrib" ] || erreur "le thème d'origine ($THEME.distrib) est absent : détournement manquant."
+# Carte d'utilisateur translucide (tolome-gdm-theme >= 0.2.0) dans les feuilles sombre et claire
+for feuille in dark light; do
+    gresource extract "$THEME" "/org/gnome/shell/theme/gnome-shell-$feuille.css" | grep -q 'tolome-user-card' \
+        || erreur "le thème de GNOME Shell n'a pas la carte d'utilisateur translucide dans gnome-shell-$feuille.css (tolome-gdm-theme)."
+done
+
+# Avatar par défaut pour GDM (tolome-base >= 0.4.0) : outil, image et unités activées
+[ -x /usr/lib/tolome/set-avatar ] || erreur "/usr/lib/tolome/set-avatar est absent ou non exécutable (tolome-base)."
+[ -f /usr/share/tolome/face.png ] || erreur "/usr/share/tolome/face.png est absent (tolome-base)."
+for unite in tolome-avatar.service tolome-avatar.path; do
+    [ -f "/usr/lib/systemd/system/$unite" ] || erreur "l'unité $unite est absente (tolome-base)."
+    [ -L "/etc/systemd/system/multi-user.target.wants/$unite" ] || erreur "l'unité $unite n'est pas activée (multi-user.target.wants)."
+done
 
 # Image de profil par défaut : PNG de Tɔlɔmɛ, et non plus le SVG de desktop-base
 if [ "$(head -c 4 /etc/skel/.face | od -An -c | tr -d ' ')" != "211PNG" ] && ! head -c 8 /etc/skel/.face | grep -q PNG; then
