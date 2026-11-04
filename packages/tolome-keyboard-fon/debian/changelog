@@ -1,3 +1,14 @@
+tolome-keyboard-fon (0.1.1) UNRELEASED; urgency=medium
+
+  * Declare the "fon" layout in /usr/share/X11/xkb/rules/base.lst, the
+    catalogue read by the Calamares keyboard page (it reads neither evdev.xml
+    nor base.xml). The file of xkb-data is diverted (base.lst.distrib, always
+    the original) and base.lst is regenerated from it with the "fon" line;
+    a dpkg trigger redoes it after each xkb-data upgrade. Removing the
+    package gives base.lst back to xkb-data.
+
+ -- Anhky <dev@tolome.net>  Wed, 04 Nov 2026 11:00:00 +0100
+
 tolome-keyboard-fon (0.1.0) UNRELEASED; urgency=medium
 
   * Initial packaging of the Fongbe layout (renamed from "fg" to "fon").

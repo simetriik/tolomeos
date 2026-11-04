@@ -11,6 +11,7 @@
 #    est posé pour GDM (tolome-avatar : outil, image, unités .service et .path activées) ;
 #  - le branding de Calamares est celui de Tɔlɔmɛ (aucun logo, titre ni lanceur Debian) ;
 #  - ckbcomp (console-setup) est présent : il dessine l'aperçu du clavier de Calamares ;
+#  - la disposition fon est déclarée dans base.lst, le catalogue de Calamares (xkb-data détourné, original intact) ;
 #  - les polices Noto des écritures de la liste des langues de Calamares sont installées ;
 #  - les locales fr_BJ et fon_BJ sont compilées et listées dans SUPPORTED (détourné), sans
 #    changer la langue par défaut (LANG reste fr_FR.UTF-8).
@@ -118,6 +119,16 @@ grep -q "calamares-install-tolome.desktop" /usr/share/glib-2.0/schemas/96_tolome
     || erreur "le dock n'épingle pas calamares-install-tolome.desktop."
 # Aperçu du clavier de Calamares : ckbcomp (console-setup)
 [ -x /usr/bin/ckbcomp ] || erreur "/usr/bin/ckbcomp est absent (aperçu du clavier de Calamares vide ; paquet console-setup)."
+
+# Disposition « fon » dans le catalogue de Calamares (base.lst, tolome-keyboard-fon >= 0.1.1) :
+# base.lst contient « fon », base.lst.distrib (xkb-data d'origine) reste intact, symbols/fon est là
+KBLST=/usr/share/X11/xkb/rules/base.lst
+[ -f "$KBLST.distrib" ] || erreur "$KBLST n'est pas détourné (tolome-keyboard-fon : la disposition fon n'apparaîtrait pas dans Calamares)."
+grep -q '^  fon  ' "$KBLST" || erreur "$KBLST ne déclare pas la disposition fon (liste des claviers de Calamares)."
+grep -q '^  fon  ' "$KBLST.distrib" && erreur "$KBLST.distrib (fichier d'origine de xkb-data) a été modifié."
+[ "$(grep -c '^! layout' "$KBLST")" = 1 ] && [ "$(grep -c '^! variant' "$KBLST")" = 1 ] || erreur "$KBLST est mal formé (sections layout/variant)."
+[ -f /usr/share/X11/xkb/symbols/fon ] || erreur "/usr/share/X11/xkb/symbols/fon est absent (tolome-keyboard-fon)."
+[ -f /etc/xkb/rules/evdev.xml ] && grep -q '<name>fon</name>' /etc/xkb/rules/evdev.xml || erreur "/etc/xkb/rules/evdev.xml ne déclare pas fon (GNOME)."
 
 # Polices Noto des écritures de la liste des langues de Calamares
 installe fonts-noto-core || erreur "fonts-noto-core est absent (hindi, marathi, malayalam, thaï, cingalais en carrés)."

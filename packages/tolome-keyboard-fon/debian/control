@@ -13,5 +13,6 @@ Description: Fongbe (fon) keyboard layout for Tolome
  Adds the "fon" XKB layout (Fongbe, Benin) with the letters ɔ ɛ ɖ and
  the tone and vowel diacritics used to write Fon.
  .
- The layout is installed beside the files of xkb-data, without modifying
- them, and is selectable in GNOME under X11 and Wayland.
+ The layout is installed beside the files of xkb-data and is selectable in
+ GNOME under X11 and Wayland. It is also listed in the Calamares installer:
+ base.lst of xkb-data is diverted and rebuilt with the "fon" line.

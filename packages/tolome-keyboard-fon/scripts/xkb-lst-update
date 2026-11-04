@@ -1,0 +1,48 @@
+#!/bin/sh
+# Déclare la disposition « fon » dans base.lst, le catalogue que lit Calamares.
+#
+# Calamares (module clavier) ne lit ni evdev.xml ni base.xml : il lit
+# /usr/share/X11/xkb/rules/base.lst. Ce fichier appartient à xkb-data ; il est
+# détourné (base.lst.distrib = fichier d'origine, toujours à jour) et ce script
+# régénère base.lst = base.lst.distrib + la ligne de « fon ».
+#
+# Usage : xkb-lst-update update|clean
+#   update  régénère base.lst à partir de base.lst.distrib (idempotent)
+#   clean   remet base.lst à l'identique de base.lst.distrib
+#
+# Variable d'environnement (tests uniquement) :
+#   TOLOME_XKB_LST   (défaut /usr/share/X11/xkb/rules/base.lst)
+set -eu
+
+LST="${TOLOME_XKB_LST:-/usr/share/X11/xkb/rules/base.lst}"
+ORIG="$LST.distrib"
+TAG="tolome-keyboard-fon"
+ENTRY="  fon             Fongbe (Benin)"
+
+[ -f "$ORIG" ] || { echo "$TAG: $ORIG est absent, base.lst non modifié." >&2; exit 0; }
+
+case "${1:-update}" in
+    clean)
+        cp -p "$ORIG" "$LST.new" && mv -f "$LST.new" "$LST"
+        ;;
+    update)
+        # Insère « fon » dans la section « ! layout », à sa place alphabétique
+        # (le catalogue est trié par description) ; ne fait rien si déjà présent.
+        awk -v entry="$ENTRY" '
+            /^! / { sec = $2 }
+            sec == "layout" && !done && $1 == "fon" { done = 1 }
+            sec == "layout" && !done && /^  [^ ]+ +[^ ]/ {
+                d = $0; sub(/^  [^ ]+ +/, "", d)
+                if (tolower(d) > tolower("Fongbe (Benin)")) { print entry; done = 1 }
+            }
+            sec == "variant" && !done { print entry; done = 1 }
+            { print }
+        ' "$ORIG" > "$LST.new"
+        grep -q '^  fon  ' "$LST.new" || { rm -f "$LST.new"; echo "$TAG: insertion de fon impossible." >&2; exit 1; }
+        chmod --reference="$ORIG" "$LST.new" 2>/dev/null || chmod 644 "$LST.new"
+        mv -f "$LST.new" "$LST"
+        ;;
+    *)
+        echo "usage : $0 update|clean" >&2; exit 2
+        ;;
+esac

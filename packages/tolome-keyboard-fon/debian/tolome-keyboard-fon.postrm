@@ -1,0 +1,18 @@
+#!/bin/sh
+set -e
+
+LST=/usr/share/X11/xkb/rules/base.lst
+
+case "$1" in
+    remove|abort-install)
+        # Rend base.lst à xkb-data (version à jour comprise).
+        if dpkg-divert --list tolome-keyboard-fon 2>/dev/null | grep -q "$LST"; then
+            rm -f "$LST" "$LST.new"
+            dpkg-divert --package tolome-keyboard-fon --remove --rename "$LST"
+        fi
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0

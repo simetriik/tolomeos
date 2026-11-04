@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+
+LST=/usr/share/X11/xkb/rules/base.lst
+
+if [ "$1" = "install" ] || [ "$1" = "upgrade" ]; then
+    # Détourne base.lst de xkb-data (catalogue lu par Calamares) : la version de
+    # Tɔlɔmɛ (originale + « fon ») est générée par xkb-lst-update à partir du .distrib.
+    dpkg-divert --package tolome-keyboard-fon --add --rename \
+        --divert "$LST.distrib" "$LST"
+    # Évite que base.lst soit absent entre le détournement et la génération.
+    if [ ! -e "$LST" ] && [ -f "$LST.distrib" ]; then
+        cp -p "$LST.distrib" "$LST"
+    fi
+fi
+
+#DEBHELPER#
+
+exit 0
