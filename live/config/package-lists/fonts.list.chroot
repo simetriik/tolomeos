@@ -1,0 +1,5 @@
+# Polices couvrant les écritures proposées par Calamares (liste des langues) :
+# hindi, marathi (devanagari), malayalam, thaï, cingalais, coréen, chinois, japonais.
+# Sans elles, ces langues s'affichent en carrés.
+fonts-noto-core
+fonts-noto-cjk
