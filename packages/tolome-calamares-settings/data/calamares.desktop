@@ -1,0 +1,16 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Installer Tɔlɔmɛ
+GenericName=Installateur Calamares
+Comment=Installer Tɔlɔmɛ sur cet ordinateur
+Exec=calamares-install-tolome
+TryExec=calamares
+Icon=tolome
+Terminal=false
+Categories=Qt;System;
+StartupNotify=true
+# Lanceur d'origine de Calamares, masqué : seul calamares-install-tolome.desktop
+# apparaît dans les applications. Ce fichier reste là pour que la fenêtre de
+# Calamares (classe « calamares ») garde l'icône Tɔlɔmɛ dans le dock.
+NoDisplay=true

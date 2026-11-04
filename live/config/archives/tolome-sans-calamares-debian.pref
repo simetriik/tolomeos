@@ -1,0 +1,7 @@
+# Le branding de l'installateur vient de tolome-calamares-settings, qui remplace
+# calamares-settings-debian (Conflicts/Replaces/Provides). Ce fichier interdit
+# aussi à apt d'installer le paquet Debian, et la garde 0210-check-packages
+# fait échouer la construction s'il réapparaît.
+Package: calamares-settings-debian
+Pin: release *
+Pin-Priority: -1

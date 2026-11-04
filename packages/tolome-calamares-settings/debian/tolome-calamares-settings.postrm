@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "remove" ] || [ "$1" = "abort-install" ]; then
+    # Rend calamares.desktop au paquet calamares.
+    dpkg-divert --package tolome-calamares-settings --remove --rename /usr/share/applications/calamares.desktop
+fi
+
+#DEBHELPER#
+
+exit 0

@@ -9,6 +9,7 @@
 #    est celle de Tɔlɔmɛ, et la commande « dada » est unique ;
 #  - le thème de l'écran de connexion a la carte d'utilisateur translucide, et l'avatar par défaut
 #    est posé pour GDM (tolome-avatar : outil, image, unités .service et .path activées) ;
+#  - le branding de Calamares est celui de Tɔlɔmɛ (aucun logo, titre ni lanceur Debian) ;
 #  - ckbcomp (console-setup) est présent : il dessine l'aperçu du clavier de Calamares ;
 #  - les polices Noto des écritures de la liste des langues de Calamares sont installées ;
 #  - les locales fr_BJ et fon_BJ sont compilées et listées dans SUPPORTED (détourné), sans
@@ -79,6 +80,42 @@ if [ -f /etc/default/locale ] && ! grep -q '^LANG=.*fr_FR.UTF-8' /etc/default/lo
     erreur "/etc/default/locale : LANG n'est pas fr_FR.UTF-8."
 fi
 
+# Calamares : branding Tɔlɔmɛ verrouillé (aucun élément Debian)
+installe calamares-settings-debian && erreur "calamares-settings-debian est installé : il doit être remplacé par tolome-calamares-settings."
+SETTINGS=/etc/calamares/settings.conf
+[ -f "$SETTINGS" ] || erreur "$SETTINGS est absent (tolome-calamares-settings)."
+grep -qx 'branding: tolome' "$SETTINGS" || erreur "$SETTINGS ne pointe pas vers le branding « tolome »."
+[ "$(dpkg -S "$SETTINGS" 2>/dev/null | cut -d: -f1)" = "tolome-calamares-settings" ] \
+    || erreur "$SETTINGS n'appartient pas à tolome-calamares-settings."
+BRANDING=/usr/share/calamares/branding/tolome
+for f in branding.desc show.qml tolome-logo.png welcome.png; do
+    [ -f "$BRANDING/$f" ] || erreur "$BRANDING/$f est absent (branding Calamares)."
+done
+grep -q -i 'debian' "$BRANDING/branding.desc" && erreur "branding.desc de Tɔlɔmɛ mentionne Debian (titre ou logo)."
+grep -q '^ *productName: *Tɔlɔmɛ' "$BRANDING/branding.desc" || erreur "branding.desc : productName n'est pas Tɔlɔmɛ (titre de l'installateur)."
+grep -q '^ *productLogo: *"tolome-logo.png"' "$BRANDING/branding.desc" || erreur "branding.desc : productLogo n'est pas tolome-logo.png (logo de la barre latérale)."
+# Un seul autre branding toléré : « default » (fourni par calamares, jamais sélectionné)
+for dir in /usr/share/calamares/branding/*/; do
+    nom=$(basename "$dir")
+    case "$nom" in tolome|default) ;; *) erreur "branding Calamares inattendu : $dir" ;; esac
+done
+[ -e /usr/share/calamares/branding/debian ] && erreur "un branding Calamares « debian » est présent."
+# Lanceurs : celui de Tɔlɔmɛ existe ; aucun lanceur Calamares ne s'appelle ou ne porte l'icône Debian
+LAUNCHER=/usr/share/applications/calamares-install-tolome.desktop
+[ -f "$LAUNCHER" ] || erreur "$LAUNCHER est absent (lanceur de l'installateur)."
+grep -q '^Icon=tolome$' "$LAUNCHER" || erreur "$LAUNCHER n'a pas l'icône « tolome »."
+[ -f /usr/share/icons/hicolor/scalable/apps/tolome.svg ] || [ -f /usr/share/icons/hicolor/256x256/apps/tolome.png ] \
+    || [ -n "$(ls /usr/share/icons/hicolor/*/apps/tolome.* 2>/dev/null)" ] || erreur "l'icône « tolome » du lanceur est absente."
+grep -q -i 'debian' "$LAUNCHER" && erreur "$LAUNCHER mentionne Debian."
+for f in /usr/share/applications/*calamares*.desktop; do
+    grep -q -E '^(Name|Icon)(\[[^]]*\])?=.*[Dd]ebian' "$f" && erreur "le lanceur $f porte un nom ou une icône Debian."
+done
+# Lanceur d'origine de Calamares : détourné et masqué (NoDisplay), icône Tɔlɔmɛ
+[ -f /usr/share/applications/calamares.desktop.distrib ] || erreur "calamares.desktop n'est pas détourné (tolome-calamares-settings)."
+grep -qx 'NoDisplay=true' /usr/share/applications/calamares.desktop || erreur "calamares.desktop d'origine n'est pas masqué (NoDisplay=true)."
+grep -qx 'Icon=tolome' /usr/share/applications/calamares.desktop || erreur "calamares.desktop n'a pas l'icône « tolome » (dock)."
+grep -q "calamares-install-tolome.desktop" /usr/share/glib-2.0/schemas/96_tolome-calamares-settings.gschema.override \
+    || erreur "le dock n'épingle pas calamares-install-tolome.desktop."
 # Aperçu du clavier de Calamares : ckbcomp (console-setup)
 [ -x /usr/bin/ckbcomp ] || erreur "/usr/bin/ckbcomp est absent (aperçu du clavier de Calamares vide ; paquet console-setup)."
 

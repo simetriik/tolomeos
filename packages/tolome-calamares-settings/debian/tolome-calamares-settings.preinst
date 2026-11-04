@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "install" ] || [ "$1" = "upgrade" ]; then
+    # Détourne le lanceur d'origine de Calamares : le nôtre (masqué, icône Tɔlɔmɛ) prend sa place.
+    dpkg-divert --package tolome-calamares-settings --add --rename \
+        --divert /usr/share/applications/calamares.desktop.distrib /usr/share/applications/calamares.desktop
+fi
+
+#DEBHELPER#
+
+exit 0

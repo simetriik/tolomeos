@@ -8,3 +8,4 @@ build/branding/*.png usr/share/calamares/branding/tolome/
 data/scripts/set-keyboard usr/share/tolome-calamares/
 data/calamares-install-tolome usr/bin/
 data/calamares-install-tolome.desktop usr/share/applications/
+data/calamares.desktop usr/share/applications/

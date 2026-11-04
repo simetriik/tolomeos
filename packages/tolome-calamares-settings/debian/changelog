@@ -1,5 +1,10 @@
 tolome-calamares-settings (0.1.4) UNRELEASED; urgency=medium
 
+  * Provides calamares-settings-debian as well (Conflicts and Replaces were
+    already declared), so that nothing can pull the Debian branding back in.
+  * The original calamares.desktop is diverted and replaced by a hidden copy
+    (NoDisplay=true, Tolome icon): only the Tolome launcher is listed, and the
+    Calamares window keeps the Tolome icon in the dock.
   * Depends on console-setup: its ckbcomp command draws the keyboard preview
     in Calamares; without it the keys show no letters.
 

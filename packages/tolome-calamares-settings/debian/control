@@ -21,7 +21,7 @@ Depends: calamares,
  console-setup,
  ${misc:Depends}
 Recommends: tolome-artwork, tolome-keyboard-fon, x11-xserver-utils
-Provides: calamares-settings
+Provides: calamares-settings, calamares-settings-debian
 Conflicts: calamares-settings-debian
 Replaces: calamares-settings-debian
 Description: Tolome theme and settings for the Calamares installer
