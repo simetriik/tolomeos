@@ -1,3 +1,10 @@
+tolome-calamares-settings (0.1.4) UNRELEASED; urgency=medium
+
+  * Depends on console-setup: its ckbcomp command draws the keyboard preview
+    in Calamares; without it the keys show no letters.
+
+ -- Anhky <dev@tolome.net>  Wed, 04 Nov 2026 10:00:00 +0100
+
 tolome-calamares-settings (0.1.3) UNRELEASED; urgency=medium
 
   * Live dock: Thunderbird replaces Evolution; drop rhythmbox, which is not

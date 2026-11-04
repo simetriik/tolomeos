@@ -18,6 +18,7 @@ Depends: calamares,
  qml-module-qtquick-window2,
  qml-module-qtquick2,
  dconf-gsettings-backend | gsettings-backend,
+ console-setup,
  ${misc:Depends}
 Recommends: tolome-artwork, tolome-keyboard-fon, x11-xserver-utils
 Provides: calamares-settings
