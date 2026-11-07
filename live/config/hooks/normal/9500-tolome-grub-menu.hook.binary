@@ -1,0 +1,23 @@
+#!/bin/sh
+# Libellés du menu GRUB en français, identiques en BIOS et en UEFI.
+# live-build écrit ces libellés en anglais dans binary/boot/grub/grub.cfg
+# (étape binary_grub_cfg, avant les hooks binaires) : on les remplace ici.
+set -e
+
+CFG=binary/boot/grub/grub.cfg
+
+# Chaque libellé doit exister, sinon la construction échoue (le menu resterait en anglais).
+replace() {
+    grep -qF "\"$1\"" "$CFG" || { echo "Libellé absent de $CFG : $1" >&2; exit 1; }
+    sed -i "s|\"$1\"|\"$2\"|" "$CFG"
+}
+replace_quoted() {
+    grep -qF "'$1'" "$CFG" || { echo "Libellé absent de $CFG : $1" >&2; exit 1; }
+    sed -i "s|'$1'|'$2'|" "$CFG"
+}
+
+replace "Live system (amd64)" "Essayer Tɔlɔmɛ"
+replace "Live system (amd64 fail-safe mode)" "Tɔlɔmɛ, mode sans échec"
+replace "Verify integrity of the boot medium" "Vérifier l'intégrité du support de démarrage"
+replace "UEFI Firmware Settings" "Paramètres du micrologiciel UEFI"
+replace_quoted "Utilities..." "Utilitaires..."
